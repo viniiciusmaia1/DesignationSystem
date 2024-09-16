@@ -1,4 +1,4 @@
-package com.brativatelecom.designationSystem;
+package com.br.ativatelecom.designationSystem;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
