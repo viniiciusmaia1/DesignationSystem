@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
@@ -28,7 +27,6 @@ public class Responsavel {
 
         @Column(name = "dta_ultima_modificacao")
         private LocalDateTime dtaUltimaModificacao;
-
 
 }
 

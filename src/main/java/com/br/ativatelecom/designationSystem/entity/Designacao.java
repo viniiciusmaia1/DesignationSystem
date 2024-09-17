@@ -41,8 +41,8 @@ public class Designacao {
     @JoinColumn(name = "id_parceiro", referencedColumnName = "id")
     private Parceiro parceiro;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "id_funcionario")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_responsavel", referencedColumnName = "id")
     private Responsavel responsavel;
 
     @Column(name = "dta_cadastro")
