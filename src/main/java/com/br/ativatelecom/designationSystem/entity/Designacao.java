@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,21 +22,28 @@ public class Designacao {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne //x
+    @Column(name = "designacao")
+    private String designacao;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cidade", referencedColumnName = "id")
-    private Long idCidade;
+    private Cidade cidade;
 
-    @Column(name = "id_produto")
-    private Long idProduto;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_produto", referencedColumnName = "id")
+    private Produto produto;
 
-    @Column(name = "id_status")
-    private Long idStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_status", referencedColumnName = "id")
+    private Status status;
 
-    @Column(name = "id_parceiro")
-    private Long idParceiro;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_parceiro", referencedColumnName = "id")
+    private Parceiro parceiro;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "id_funcionario")
-    private Long idFuncionario;
+    private Responsavel responsavel;
 
     @Column(name = "dta_cadastro")
     private LocalDateTime dtaCadastro;
@@ -43,11 +51,11 @@ public class Designacao {
     @Column(name = "dta_ultima_modificacao")
     private LocalDateTime dtaUltimaModificacao;
 
-    @ElementCollection
-    private List<String> observacoes;
+    @OneToMany(mappedBy = "designacao", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Observacao> observacoes = new ArrayList<>();
 
-    @ElementCollection
-    private List<String> chamados;
+    @OneToMany(mappedBy = "designacao", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Chamado> chamados = new ArrayList<>();
 
     @Column(name = "dta_instalacao")
     private LocalDateTime dtaInstalacao;
@@ -64,16 +72,35 @@ public class Designacao {
     @Column(name = "nome_funcionario_oi")
     private String nomFuncionarioOi;
 
+    @Column(name = "prazo")
     private Integer prazo;
+
+    @Column(name = "mensalidade_parceiro")
     private Double mensalidadeParceiro;
+
+    @Column(name = "mensalidade_os")
     private Double mensalidadeOs;
+
+    @Column(name = "taxa_instalacao")
     private Double taxaInstalacao;
 
+    @Column(name = "endereco")
     private String endereco;
+
+    @Column(name = "endereco_servidor")
     private String enderecoServidor;
+
+    @Column(name = "cvlan")
     private String cvlan;
+
+    @Column(name = "ipwan")
     private String ipwan;
+
+    @Column(name = "svlan")
     private String svlan;
+
+    @Column(name = "velocidade")
     private Integer velocidade;
+
 }
 
