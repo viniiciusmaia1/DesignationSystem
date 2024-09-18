@@ -22,7 +22,11 @@ public class Cidade {
     @JoinColumn(name = "id_estado", referencedColumnName = "id")
     private Estado estado;
 
-    public Cidade(){
+    public Cidade(String nome) {
+        this.nome = nome;
+    }
+
+    public Cidade() {
 
     }
 

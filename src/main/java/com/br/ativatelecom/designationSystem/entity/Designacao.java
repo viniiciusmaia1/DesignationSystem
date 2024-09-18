@@ -1,10 +1,7 @@
 package com.br.ativatelecom.designationSystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.text.Normalizer;
 import java.time.LocalDateTime;
@@ -16,7 +13,7 @@ import java.util.List;
 @Table(name = "DESIGNACOES")
 @Getter
 @EqualsAndHashCode
-@AllArgsConstructor
+@NoArgsConstructor
 public class Designacao {
 
     @Id
