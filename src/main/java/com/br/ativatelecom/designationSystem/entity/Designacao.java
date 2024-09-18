@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,5 +103,31 @@ public class Designacao {
     @Column(name = "velocidade")
     private Integer velocidade;
 
-}
+    public Designacao(String designacao, Cidade cidade, Produto produto) {
+        this.designacao = designacao;
+        this.cidade = cidade;
+        this.produto = produto;
+    }
 
+    @PrePersist
+    protected void onCreate() {
+        this.dtaCadastro = LocalDateTime.now();
+        this.dtaUltimaModificacao = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dtaUltimaModificacao = LocalDateTime.now();
+    }
+
+    public void setCidade(Cidade cidade) {
+        String nomeNormalizado = normalizarCidade(cidade.getNome());
+        this.cidade.setNome(nomeNormalizado);
+    }
+
+    private String normalizarCidade(String nome) {
+        nome = Normalizer.normalize(nome, Normalizer.Form.NFD);
+        nome = nome.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return nome.toUpperCase();
+    }
+}
