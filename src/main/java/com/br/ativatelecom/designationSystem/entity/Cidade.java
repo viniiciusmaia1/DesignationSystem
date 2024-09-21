@@ -3,39 +3,41 @@ package com.br.ativatelecom.designationSystem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
-@Getter
-@Setter
-@EqualsAndHashCode
-@AllArgsConstructor
 @Table(name = "CIDADE")
+@Getter
+@EqualsAndHashCode
+@NoArgsConstructor
 public class Cidade {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nome_cidade")
+    @Column(name = "nome_cidade", nullable = false)
     private String nome;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_estado", referencedColumnName = "id")
     private Estado estado;
 
-    public Cidade(String nome) {
-        this.nome = nome;
+    @Column(name = "data_criacao")
+    private LocalDateTime dataCriacao;
+
+    @Column(name = "data_ultima_modificacao")
+    private LocalDateTime dataUltimaModificacao;
+
+    @PrePersist
+    protected void onCreate() {
+        this.dataCriacao = LocalDateTime.now();
+        this.dataUltimaModificacao = LocalDateTime.now();
     }
 
-    public Cidade() {
-
-    }
-
-    public void setNome(String nome) {
-        this.nome = removerAcentos(nome).toUpperCase();
-    }
-
-    private String removerAcentos(String nomeCidade) {
-        return java.text.Normalizer.normalize(nomeCidade, java.text.Normalizer.Form.NFD)
-                .replaceAll("[^\\p{ASCII}]", "");
+    @PreUpdate
+    protected void onUpdate() {
+        this.dataUltimaModificacao = LocalDateTime.now();
     }
 }

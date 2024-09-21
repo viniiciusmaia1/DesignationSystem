@@ -1,14 +1,10 @@
 package com.br.ativatelecom.designationSystem.service;
 
-import com.br.ativatelecom.designationSystem.entity.Cidade;
 import com.br.ativatelecom.designationSystem.entity.Designacao;
-import com.br.ativatelecom.designationSystem.repository.CidadeRepository;
 import com.br.ativatelecom.designationSystem.repository.DesignacaoRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DesignacaoService {
@@ -16,49 +12,25 @@ public class DesignacaoService {
     @Autowired
     private DesignacaoRepository designacaoRepository;
 
-    @Autowired
-    private CidadeRepository cidadeRepository;
-
-    public Designacao createDesignacao(Designacao designacao) {
-
-        String nomeCidade = designacao.getCidade().getNome();
-        Optional<Cidade> cidade = cidadeRepository.findByNomeIgnoreCase(nomeCidade);
-        if (cidade.isPresent()) {
-            designacao.setCidade(cidade.get());
-        } else {
-            throw new RuntimeException("Cidade não encontrada: " + nomeCidade);
-        }
-
+    public Designacao criarDesignacao(Designacao designacao) {
         return designacaoRepository.save(designacao);
     }
 
-    public List<Designacao> findAll() {
-        return designacaoRepository.findAll();
+    public Designacao buscarPorId(Long id) {
+        return designacaoRepository.findById(id).orElseThrow(() -> new RuntimeException("Designação não encontrada"));
     }
 
-    public Optional<Designacao> findById(Long id) {
-        return designacaoRepository.findById(id);
+    public Designacao atualizarDesignacao(Long id, Designacao designacao) {
+        Designacao existente = buscarPorId(id);
+        existente.setDesignacao(designacao.getDesignacao());
+        return designacaoRepository.save(existente);
     }
 
-    public Designacao updateDesignacao(Long id, Designacao updatedDesignacao) {
-        Optional<Designacao> designacao = designacaoRepository.findById(id);
-        if (designacao.isPresent()) {
-            Designacao existingDesignacao = designacao.get();
-            existingDesignacao.setDesignacao(updatedDesignacao.getDesignacao());
-            existingDesignacao.setProduto(updatedDesignacao.getProduto());
-            existingDesignacao.setStatus(updatedDesignacao.getStatus());
-            existingDesignacao.setParceiro(updatedDesignacao.getParceiro());
-            return designacaoRepository.save(existingDesignacao);
-        } else {
-            throw new RuntimeException("Designação não encontrada");
-        }
-    }
-
-    public void deleteDesignacao(Long id) {
+    public void deletarDesignacao(Long id) {
         designacaoRepository.deleteById(id);
     }
 
-    public List<Designacao> getAllDesignacoes() {
+    public List<Designacao> listarDesignacoes() {
         return designacaoRepository.findAll();
     }
 }
