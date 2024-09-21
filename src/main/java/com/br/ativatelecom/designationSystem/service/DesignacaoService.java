@@ -2,9 +2,10 @@ package com.br.ativatelecom.designationSystem.service;
 
 import com.br.ativatelecom.designationSystem.entity.Designacao;
 import com.br.ativatelecom.designationSystem.repository.DesignacaoRepository;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class DesignacaoService {

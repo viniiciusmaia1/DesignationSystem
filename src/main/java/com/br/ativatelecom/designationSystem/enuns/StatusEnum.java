@@ -1,12 +1,7 @@
 package com.br.ativatelecom.designationSystem.enuns;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.Table;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Table(name = "STATUS")
 @Getter

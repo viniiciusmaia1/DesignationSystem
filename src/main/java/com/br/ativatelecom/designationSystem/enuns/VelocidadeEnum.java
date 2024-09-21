@@ -1,8 +1,5 @@
 package com.br.ativatelecom.designationSystem.enuns;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-
 public enum VelocidadeEnum {
     DOIS(2),
     QUATRO(4),

@@ -2,12 +2,12 @@ package com.br.ativatelecom.designationSystem.entity;
 
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.text.Normalizer;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
