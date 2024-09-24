@@ -22,8 +22,12 @@ public class DesignacaoController {
 
     @PostMapping
     public ResponseEntity<Designacao> criarDesignacao(@RequestBody DesignacaoDTO request) {
-        Designacao novaDesignacao = designacaoService.criarDesignacao(request.toDesignacao(), request.getNomeCidade());
-        return ResponseEntity.ok(novaDesignacao);
+        try {
+            Designacao novaDesignacao = designacaoService.criarDesignacao(request.toDesignacao(), request.getNomeCidade());
+            return ResponseEntity.ok(novaDesignacao);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null); // Retorna 400 Bad Request em caso de erro
+        }
     }
 
     @GetMapping("/{id}")
@@ -33,8 +37,12 @@ public class DesignacaoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Designacao> atualizarDesignacao(@PathVariable Long id, @RequestBody DesignacaoDTO request) {
-        Designacao designacaoAtualizada = designacaoService.atualizarDesignacao(id, request.toDesignacao());
-        return ResponseEntity.ok(designacaoAtualizada);
+        try {
+            Designacao designacaoAtualizada = designacaoService.atualizarDesignacao(id, request.toDesignacao());
+            return ResponseEntity.ok(designacaoAtualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(null); // Retorna 400 Bad Request em caso de erro
+        }
     }
 
     @DeleteMapping("/{id}")

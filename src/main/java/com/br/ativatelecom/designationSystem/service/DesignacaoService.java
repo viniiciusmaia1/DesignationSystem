@@ -22,6 +22,7 @@ public class DesignacaoService {
     }
 
     public Designacao criarDesignacao(Designacao designacao, String nomeCidade) {
+        validarDesignacaoUnica(designacao.getDesignacao());
         Cidade cidade = encontrarOuCriarCidade(nomeCidade);
         designacao.setCidade(cidade);
         return designacaoRepository.save(designacao);
@@ -34,6 +35,7 @@ public class DesignacaoService {
 
     public Designacao atualizarDesignacao(Long id, Designacao designacao) {
         Designacao existente = buscarPorId(id);
+        validarDesignacaoUnica(designacao.getDesignacao());
         existente.setDesignacao(designacao.getDesignacao());
         existente.setCidade(designacao.getCidade()); // Atualiza a cidade se necessário
         return designacaoRepository.save(existente);
@@ -48,6 +50,12 @@ public class DesignacaoService {
 
     public List<Designacao> listarDesignacoes() {
         return designacaoRepository.findAll();
+    }
+
+    private void validarDesignacaoUnica(String nome) {
+        if (designacaoRepository.findByDesignacao(nome).isPresent()) {
+            throw new RuntimeException("Já existe uma designação com o nome: " + nome);
+        }
     }
 
     private Cidade encontrarOuCriarCidade(String nomeCidade) {
