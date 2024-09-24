@@ -1,5 +1,6 @@
 package com.br.ativatelecom.designationSystem.controller;
 
+import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
 import com.br.ativatelecom.designationSystem.entity.Designacao;
 import com.br.ativatelecom.designationSystem.service.DesignacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,16 @@ import java.util.List;
 @RequestMapping("/designacoes")
 public class DesignacaoController {
 
+    private final DesignacaoService designacaoService;
+
     @Autowired
-    private DesignacaoService designacaoService;
+    public DesignacaoController(DesignacaoService designacaoService) {
+        this.designacaoService = designacaoService;
+    }
 
     @PostMapping
-    public ResponseEntity<Designacao> criarDesignacao(@RequestBody Designacao designacao) {
-        Designacao novaDesignacao = designacaoService.criarDesignacao(designacao);
+    public ResponseEntity<Designacao> criarDesignacao(@RequestBody DesignacaoDTO request) {
+        Designacao novaDesignacao = designacaoService.criarDesignacao(request.toDesignacao(), request.getNomeCidade());
         return ResponseEntity.ok(novaDesignacao);
     }
 
@@ -27,8 +32,8 @@ public class DesignacaoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Designacao> atualizarDesignacao(@PathVariable Long id, @RequestBody Designacao designacao) {
-        Designacao designacaoAtualizada = designacaoService.atualizarDesignacao(id, designacao);
+    public ResponseEntity<Designacao> atualizarDesignacao(@PathVariable Long id, @RequestBody DesignacaoDTO request) {
+        Designacao designacaoAtualizada = designacaoService.atualizarDesignacao(id, request.toDesignacao());
         return ResponseEntity.ok(designacaoAtualizada);
     }
 
@@ -43,5 +48,3 @@ public class DesignacaoController {
         return ResponseEntity.ok(designacaoService.listarDesignacoes());
     }
 }
-
-
