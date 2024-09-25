@@ -27,7 +27,7 @@ public class DesignacaoController {
             Designacao novaDesignacao = designacaoService.criarDesignacao(request.toDesignacao(), request.getNomeCidade());
             return ResponseEntity.ok(novaDesignacao);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null); // Retorna 400 Bad Request em caso de erro
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
@@ -38,7 +38,6 @@ public class DesignacaoController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<Designacao> atualizarStatus(@PathVariable Long id, @RequestBody UpdateStatusRequest request) {
-
         Designacao updatedDesignacao = designacaoService.atualizarStatus(id, request.getStatus());
         return ResponseEntity.ok(updatedDesignacao);
     }
