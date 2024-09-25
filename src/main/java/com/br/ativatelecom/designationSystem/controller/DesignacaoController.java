@@ -2,6 +2,7 @@ package com.br.ativatelecom.designationSystem.controller;
 
 import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
 import com.br.ativatelecom.designationSystem.entity.Designacao;
+import com.br.ativatelecom.designationSystem.others.UpdateStatusRequest;
 import com.br.ativatelecom.designationSystem.service.DesignacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,14 +36,11 @@ public class DesignacaoController {
         return ResponseEntity.ok(designacaoService.buscarPorId(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Designacao> atualizarDesignacao(@PathVariable Long id, @RequestBody DesignacaoDTO request) {
-        try {
-            Designacao designacaoAtualizada = designacaoService.atualizarDesignacao(id, request.toDesignacao());
-            return ResponseEntity.ok(designacaoAtualizada);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null); // Retorna 400 Bad Request em caso de erro
-        }
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Designacao> atualizarStatus(@PathVariable Long id, @RequestBody UpdateStatusRequest request) {
+
+        Designacao updatedDesignacao = designacaoService.atualizarStatus(id, request.getStatus());
+        return ResponseEntity.ok(updatedDesignacao);
     }
 
     @DeleteMapping("/{id}")

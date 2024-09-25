@@ -1,5 +1,6 @@
 package com.br.ativatelecom.designationSystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @EqualsAndHashCode
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Cidade {
 
     @Id

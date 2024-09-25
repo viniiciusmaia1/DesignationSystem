@@ -48,6 +48,9 @@ public class Designacao {
     @Column(name = "ip_wan")
     private Integer ipwan;
 
+    @Column(name = "ip")
+    private String circuitIp;
+
     // Dados gerenciais
 
     @Column(name = "dta_envio_rb")
@@ -78,7 +81,7 @@ public class Designacao {
     protected void onCreate() {
         this.dataCriacao = LocalDateTime.now();
         this.dtaUltimaModificacao = LocalDateTime.now();
-        this.status= StatusEnum.VIABILIDADE;
+        this.status = StatusEnum.VIABILIDADE;
     }
 
     @PreUpdate
@@ -86,34 +89,34 @@ public class Designacao {
         this.dtaUltimaModificacao = LocalDateTime.now();
     }
 
-    private void atualizarDatasPorStatus() {
-        LocalDateTime today = LocalDateTime.now();
+    public void atualizarStatus(StatusEnum novoStatus) {
 
+//        if (this.status == StatusEnum.INSTALADO && novoStatus == StatusEnum.AGENDADO) {
+//            throw new IllegalArgumentException("Não é permitido voltar para o estado AGENDADO a partir de INSTALADO.");
+//        }
+
+        this.status = novoStatus;
+        this.atualizarDatasPorStatus();
+    }
+
+    private void atualizarDatasPorStatus() {
+        LocalDateTime agora = LocalDateTime.now();
         switch (this.status) {
             case AGENDADO:
-                this.dtaAgendado = today;
-                break;
-            case AGENDAMENTO:
-                this.dtaAgendamento = today;
+                this.dtaAgendado = agora;
                 break;
             case INSTALADO:
-                this.dtaInstalacao = today;
+                this.dtaInstalacao = agora;
                 break;
             case HOMOLOGADO:
-                this.dtaHomologacao = today;
+                this.dtaHomologacao = agora;
                 break;
             case ENTREGUE_PORTAL_OI:
-                this.dtaEntregaOi = today;
-
-                if (this.dtaInstalacao != null) {
-                    this.dtaHomologacao = today;
-                }
-                break;
-            case ENVIO_RB:
-                this.dtaEnvioRb = today;
+                this.dtaEntregaOi = agora;
                 break;
             default:
                 break;
         }
+        this.dtaUltimaModificacao = agora;
     }
 }
