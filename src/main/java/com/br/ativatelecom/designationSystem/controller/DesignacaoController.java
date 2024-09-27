@@ -1,17 +1,17 @@
 package com.br.ativatelecom.designationSystem.controller;
 
 import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
-import com.br.ativatelecom.designationSystem.entity.Designacao;
 import com.br.ativatelecom.designationSystem.others.UpdateStatusRequest;
 import com.br.ativatelecom.designationSystem.service.DesignacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/designacoes")
+@RequestMapping("/api/designacoes")
 public class DesignacaoController {
 
     private final DesignacaoService designacaoService;
@@ -22,34 +22,48 @@ public class DesignacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Designacao> criarDesignacao(@RequestBody DesignacaoDTO request) {
+    public ResponseEntity<DesignacaoDTO> criarDesignacao(@RequestBody DesignacaoDTO request) {
         try {
-            Designacao novaDesignacao = designacaoService.criarDesignacao(request.toDesignacao(), request.getNomeCidade());
-            return ResponseEntity.ok(novaDesignacao);
+            DesignacaoDTO novaDesignacao = designacaoService.criarDesignacao(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaDesignacao);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Designacao> buscarDesignacao(@PathVariable Long id) {
-        return ResponseEntity.ok(designacaoService.buscarPorId(id));
+    public ResponseEntity<DesignacaoDTO> buscarDesignacao(@PathVariable Long id) {
+        try {
+            DesignacaoDTO designacao = designacaoService.buscarPorId(id);
+            return ResponseEntity.ok(designacao);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Designacao> atualizarStatus(@PathVariable Long id, @RequestBody UpdateStatusRequest request) {
-        Designacao updatedDesignacao = designacaoService.atualizarStatus(id, request.getStatus());
-        return ResponseEntity.ok(updatedDesignacao);
+    public ResponseEntity<DesignacaoDTO> atualizarStatus(@PathVariable Long id, @RequestBody UpdateStatusRequest request) {
+        try {
+            DesignacaoDTO updatedDesignacao = designacaoService.atualizarStatus(id, request.getStatus());
+            return ResponseEntity.ok(updatedDesignacao);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarDesignacao(@PathVariable Long id) {
-        designacaoService.deletarDesignacao(id);
-        return ResponseEntity.noContent().build();
+        try {
+            designacaoService.deletarDesignacao(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping
-    public ResponseEntity<List<Designacao>> listarDesignacoes() {
-        return ResponseEntity.ok(designacaoService.listarDesignacoes());
+    public ResponseEntity<List<DesignacaoDTO>> listarDesignacoes() {
+        List<DesignacaoDTO> designacoes = designacaoService.listarDesignacoes();
+        return ResponseEntity.ok(designacoes);
     }
 }

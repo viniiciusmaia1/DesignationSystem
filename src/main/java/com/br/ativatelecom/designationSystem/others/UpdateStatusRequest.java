@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class UpdateStatusRequest {
-    private StatusEnum status; // O status que você deseja atualizar
+    private StatusEnum status;
 }

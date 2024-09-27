@@ -2,18 +2,16 @@ package com.br.ativatelecom.designationSystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "CIDADE")
 @Getter
-@EqualsAndHashCode
+@Setter
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Cidade {
@@ -29,7 +27,7 @@ public class Cidade {
     @JoinColumn(name = "id_estado", referencedColumnName = "id")
     private Estado estado;
 
-    @Column(name = "data_criacao")
+    @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
     @Column(name = "data_ultima_modificacao")
@@ -44,5 +42,13 @@ public class Cidade {
     @PreUpdate
     protected void onUpdate() {
         this.dataUltimaModificacao = LocalDateTime.now();
+    }
+
+    public String getEstadoNome() {
+        return estado != null ? estado.getNome() : null;
+    }
+
+    public String getEstadoUf() {
+        return estado != null ? estado.getUf() : null;
     }
 }

@@ -1,5 +1,6 @@
 package com.br.ativatelecom.designationSystem.service;
 
+import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
 import com.br.ativatelecom.designationSystem.entity.Cidade;
 import com.br.ativatelecom.designationSystem.entity.Designacao;
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DesignacaoService {
@@ -23,24 +24,33 @@ public class DesignacaoService {
         this.cidadeRepository = cidadeRepository;
     }
 
-    public Designacao criarDesignacao(Designacao designacao, String nomeCidade) {
-        validarDesignacaoUnica(designacao.getDesignacao());
-        Cidade cidade = encontrarOuCriarCidade(nomeCidade);
+    public DesignacaoDTO criarDesignacao(DesignacaoDTO dto) {
+        validarDesignacaoUnica(dto.getDesignacao());
+        Cidade cidade = encontrarOuCriarCidade(dto.getNomeCidade());
+        Designacao designacao = new Designacao(dto.getDesignacao());
         designacao.setCidade(cidade);
-        return designacaoRepository.save(designacao);
+        Designacao savedDesignacao = designacaoRepository.save(designacao);
+        System.out.println("Nome da cidade recebido: " + dto.getNomeCidade());
+        return convertToDTO(savedDesignacao);
     }
 
-    public Designacao buscarPorId(Long id) {
-        return designacaoRepository.findById(id)
+    public DesignacaoDTO buscarPorId(Long id) {
+        Designacao designacao = designacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+        return convertToDTO(designacao);
     }
 
-    public Designacao atualizarDesignacao(Long id, Designacao designacao) {
-        Designacao existente = buscarPorId(id);
-        validarDesignacaoUnica(designacao.getDesignacao());
-        existente.setDesignacao(designacao.getDesignacao());
-        existente.setCidade(designacao.getCidade()); // Atualiza a cidade se necessário
-        return designacaoRepository.save(existente);
+    public DesignacaoDTO atualizarDesignacao(Long id, DesignacaoDTO dto) {
+        Designacao existente = designacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+        if (!existente.getDesignacao().equals(dto.getDesignacao())) {
+            validarDesignacaoUnica(dto.getDesignacao());
+        }
+        existente.setDesignacao(dto.getDesignacao());
+        Cidade cidade = encontrarOuCriarCidade(dto.getNomeCidade());
+        existente.setCidade(cidade);
+        Designacao updatedDesignacao = designacaoRepository.save(existente);
+        return convertToDTO(updatedDesignacao);
     }
 
     public void deletarDesignacao(Long id) {
@@ -50,8 +60,18 @@ public class DesignacaoService {
         designacaoRepository.deleteById(id);
     }
 
-    public List<Designacao> listarDesignacoes() {
-        return designacaoRepository.findAll();
+    public List<DesignacaoDTO> listarDesignacoes() {
+        return designacaoRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public DesignacaoDTO atualizarStatus(Long id, StatusEnum novoStatus) {
+        Designacao designacao = designacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+        designacao.atualizarStatus(novoStatus);
+        Designacao updatedDesignacao = designacaoRepository.save(designacao);
+        return convertToDTO(updatedDesignacao);
     }
 
     private void validarDesignacaoUnica(String nome) {
@@ -62,20 +82,19 @@ public class DesignacaoService {
 
     private Cidade encontrarOuCriarCidade(String nomeCidade) {
         return cidadeRepository.findByNomeIgnoreCase(nomeCidade)
-                .orElseGet(() -> criarNovaCidade(nomeCidade));
+                .orElseGet(() -> {
+                    Cidade novaCidade = new Cidade();
+                    novaCidade.setNome(nomeCidade);
+                    return cidadeRepository.save(novaCidade);
+                });
     }
 
-    private Cidade criarNovaCidade(String nomeCidade) {
-        Cidade novaCidade = new Cidade();
-        novaCidade.setNome(nomeCidade);
-        return cidadeRepository.save(novaCidade);
-    }
-
-    public Designacao atualizarStatus(Long id, StatusEnum novoStatus) {
-        Designacao designacao = designacaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
-
-        designacao.atualizarStatus(novoStatus);
-        return designacaoRepository.save(designacao);
+    private DesignacaoDTO convertToDTO(Designacao designacao) {
+        DesignacaoDTO dto = new DesignacaoDTO();
+        dto.setId(designacao.getId());
+        dto.setDesignacao(designacao.getDesignacao());
+        dto.setNomeCidade(designacao.getCidade().getNome());
+        dto.setStatus(designacao.getStatus());
+        return dto;
     }
 }

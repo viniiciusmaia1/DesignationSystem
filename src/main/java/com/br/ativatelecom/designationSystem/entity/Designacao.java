@@ -2,35 +2,34 @@ package com.br.ativatelecom.designationSystem.entity;
 
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "DESIGNACOES")
 @Getter
-@EqualsAndHashCode
+@Setter
 @NoArgsConstructor
 public class Designacao {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "designacao")
+    @Column(name = "designacao", nullable = false)
     private String designacao;
 
-    @Column(name = "data_criacao")
+    @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
 
-    @Column(name = "dta_ultima_modificacao")
-    private LocalDateTime dtaUltimaModificacao;
+    @Column(name = "data_ultima_modificacao")
+    private LocalDateTime dataUltimaModificacao;
 
-    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private StatusEnum status;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,85 +37,58 @@ public class Designacao {
     private Cidade cidade;
 
     // Dados importantes
-
-    @Column(name = "cvlan")
     private Integer cvlan;
-
-    @Column(name = "svlan")
     private Integer svlan;
-
-    @Column(name = "ip_wan")
-    private Integer ipwan;
-
-    @Column(name = "ip")
+    private Integer ipWan;
     private String circuitIp;
 
     // Dados gerenciais
+    private LocalDateTime dataEnvioRb;
+    private LocalDateTime dataAgendamento;
+    private LocalDateTime dataAgendado;
+    private LocalDateTime dataInstalacao;
+    private LocalDateTime dataHomologacao;
+    private LocalDateTime dataEntregaOi;
 
-    @Column(name = "dta_envio_rb")
-    private LocalDateTime dtaEnvioRb;
-
-    @Column(name = "dta_agendamento")
-    private LocalDateTime dtaAgendamento;
-
-    @Column(name = "dta_agendado")
-    private LocalDateTime dtaAgendado;
-
-    @Column(name = "dta_instalacao")
-    private LocalDateTime dtaInstalacao;
-
-    @Column(name = "dta_homologacao")
-    private LocalDateTime dtaHomologacao;
-
-    @Column(name = "dta_entrega_oi")
-    private LocalDateTime dtaEntregaOi;
-
-    //
+    public Designacao(String designacao, Cidade cidade) {
+        this.designacao = designacao;
+        this.cidade = cidade;
+        this.dataCriacao = LocalDateTime.now();
+        this.dataUltimaModificacao = LocalDateTime.now();
+        this.status = StatusEnum.VIABILIDADE;
+    }
 
     public Designacao(String designacao) {
         this.designacao = designacao;
-    }
-
-    @PrePersist
-    protected void onCreate() {
         this.dataCriacao = LocalDateTime.now();
-        this.dtaUltimaModificacao = LocalDateTime.now();
+        this.dataUltimaModificacao = LocalDateTime.now();
         this.status = StatusEnum.VIABILIDADE;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.dtaUltimaModificacao = LocalDateTime.now();
+        this.dataUltimaModificacao = LocalDateTime.now();
     }
 
     public void atualizarStatus(StatusEnum novoStatus) {
-
-//        if (this.status == StatusEnum.INSTALADO && novoStatus == StatusEnum.AGENDADO) {
-//            throw new IllegalArgumentException("Não é permitido voltar para o estado AGENDADO a partir de INSTALADO.");
-//        }
-
         this.status = novoStatus;
-        this.atualizarDatasPorStatus();
+        this.dataUltimaModificacao = LocalDateTime.now();
+        atualizarDatasPorStatus();
     }
 
     private void atualizarDatasPorStatus() {
         LocalDateTime agora = LocalDateTime.now();
         switch (this.status) {
-            case AGENDADO:
-                this.dtaAgendado = agora;
-                break;
-            case INSTALADO:
-                this.dtaInstalacao = agora;
-                break;
-            case HOMOLOGADO:
-                this.dtaHomologacao = agora;
-                break;
-            case ENTREGUE_PORTAL_OI:
-                this.dtaEntregaOi = agora;
-                break;
-            default:
-                break;
+            case AGENDADO -> this.dataAgendado = agora;
+            case INSTALADO -> this.dataInstalacao = agora;
+            case HOMOLOGADO -> this.dataHomologacao = agora;
+            case ENTREGUE_PORTAL_OI -> this.dataEntregaOi = agora;
+            case ENVIO_RB -> this.dataEnvioRb = agora;
+            case AGENDAMENTO -> this.dataAgendamento = agora;
         }
-        this.dtaUltimaModificacao = agora;
+    }
+
+    public String getCidadeNome() {
+        return cidade != null ? cidade.getNome() : null;
     }
 }
