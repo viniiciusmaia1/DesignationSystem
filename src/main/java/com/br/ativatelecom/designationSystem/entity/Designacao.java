@@ -70,6 +70,12 @@ public class Designacao {
         this.dataUltimaModificacao = LocalDateTime.now();
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.dataCriacao = LocalDateTime.now();
+        this.dataUltimaModificacao = LocalDateTime.now();
+    }
+
     public void atualizarStatus(StatusEnum novoStatus) {
         this.status = novoStatus;
         this.dataUltimaModificacao = LocalDateTime.now();
