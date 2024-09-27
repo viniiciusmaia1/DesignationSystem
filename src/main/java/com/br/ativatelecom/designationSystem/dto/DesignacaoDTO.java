@@ -36,23 +36,25 @@ public class DesignacaoDTO {
     private LocalDateTime dataEntregaOi;
 
 
-    public DesignacaoDTO(Designacao designacao) {
-        this.id = designacao.getId();
-        this.designacao = designacao.getDesignacao();
-        this.nomeCidade = designacao.getCidade() != null ? designacao.getCidade().getNome() : null;
-        this.status = designacao.getStatus();
-        this.dataCriacao = designacao.getDataCriacao();
-        this.dataUltimaModificacao = designacao.getDataUltimaModificacao();
-        this.cvlan = designacao.getCvlan();
-        this.svlan = designacao.getSvlan();
-        this.ipWan = designacao.getIpWan();
-        this.circuitIp = designacao.getCircuitIp();
-        this.dataEnvioRb = designacao.getDataEnvioRb();
-        this.dataAgendamento = designacao.getDataAgendamento();
-        this.dataAgendado = designacao.getDataAgendado();
-        this.dataInstalacao = designacao.getDataInstalacao();
-        this.dataHomologacao = designacao.getDataHomologacao();
-        this.dataEntregaOi = designacao.getDataEntregaOi();
+    private DesignacaoDTO convertToDTO(Designacao designacao) {
+        DesignacaoDTO dto = new DesignacaoDTO();
+        dto.setId(designacao.getId());
+        dto.setDesignacao(designacao.getDesignacao());
+        dto.setNomeCidade(designacao.getCidade() != null ? designacao.getCidade().getNome() : null);
+        dto.setStatus(designacao.getStatus());
+        dto.setDataCriacao(designacao.getDataCriacao());
+        dto.setDataUltimaModificacao(designacao.getDataUltimaModificacao());
+        dto.setCvlan(designacao.getCvlan());
+        dto.setSvlan(designacao.getSvlan());
+        dto.setIpWan(designacao.getIpWan());
+        dto.setCircuitIp(designacao.getCircuitIp());
+        dto.setDataEnvioRb(designacao.getDataEnvioRb());
+        dto.setDataAgendamento(designacao.getDataAgendamento());
+        dto.setDataAgendado(designacao.getDataAgendado());
+        dto.setDataInstalacao(designacao.getDataInstalacao());
+        dto.setDataHomologacao(designacao.getDataHomologacao());
+        dto.setDataEntregaOi(designacao.getDataEntregaOi());
+        return dto;
     }
 
     public DesignacaoDTO(Long id, String designacao, String nomeCidade, StatusEnum status) {
@@ -70,6 +72,8 @@ public class DesignacaoDTO {
         designacao.setSvlan(this.svlan);
         designacao.setIpWan(this.ipWan);
         designacao.setCircuitIp(this.circuitIp);
+        designacao.setDataCriacao(this.dataCriacao);
+        designacao.setDataInstalacao(this.dataInstalacao);
 
         return designacao;
     }

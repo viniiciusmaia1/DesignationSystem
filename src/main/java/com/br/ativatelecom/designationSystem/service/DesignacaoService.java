@@ -7,6 +7,9 @@ import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
 import com.br.ativatelecom.designationSystem.repository.CidadeRepository;
 import com.br.ativatelecom.designationSystem.repository.DesignacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,8 +63,10 @@ public class DesignacaoService {
         designacaoRepository.deleteById(id);
     }
 
-    public List<DesignacaoDTO> listarDesignacoes() {
-        return designacaoRepository.findAll().stream()
+    public List<DesignacaoDTO> listarDesignacoes(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Designacao> designacoesPage = designacaoRepository.findAll(pageable);
+        return designacoesPage.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

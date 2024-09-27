@@ -3,6 +3,8 @@ package com.br.ativatelecom.designationSystem.repository;
 import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
 import com.br.ativatelecom.designationSystem.entity.Designacao;
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,6 +20,9 @@ public interface DesignacaoRepository extends JpaRepository<Designacao, Long> {
     List<Designacao> findByCidade_Nome(String nomeCidade);
     List<Designacao> findByStatus(StatusEnum status);
     List<Designacao> findByDataCriacaoBetween(LocalDateTime inicio, LocalDateTime fim);
+
+    //50 RESULTADOS POR PAGINA
+    Page<Designacao> findAll(Pageable pageable);
 
     @Query("SELECT d FROM Designacao d WHERE d.cidade.nome = :nomeCidade AND d.status = :status")
     List<Designacao> findByCidadeNomeAndStatus(@Param("nomeCidade") String nomeCidade, @Param("status") StatusEnum status);

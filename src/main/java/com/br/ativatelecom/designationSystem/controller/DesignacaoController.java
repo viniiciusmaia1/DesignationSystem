@@ -62,8 +62,10 @@ public class DesignacaoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DesignacaoDTO>> listarDesignacoes() {
-        List<DesignacaoDTO> designacoes = designacaoService.listarDesignacoes();
+    public ResponseEntity<List<DesignacaoDTO>> listarDesignacoes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        List<DesignacaoDTO> designacoes = designacaoService.listarDesignacoes(page, size);
         return ResponseEntity.ok(designacoes);
     }
 }
