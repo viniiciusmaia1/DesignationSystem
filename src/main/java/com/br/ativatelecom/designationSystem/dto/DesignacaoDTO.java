@@ -55,6 +55,12 @@ public class DesignacaoDTO {
         this.dataEntregaOi = designacao.getDataEntregaOi();
     }
 
+    public DesignacaoDTO(Long id, String designacao, String nomeCidade, StatusEnum status) {
+        this.id = id;
+        this.designacao = designacao;
+        this.nomeCidade = nomeCidade;
+        this.status = status;
+    }
 
     public Designacao toEntity() {
         Designacao designacao = new Designacao();
