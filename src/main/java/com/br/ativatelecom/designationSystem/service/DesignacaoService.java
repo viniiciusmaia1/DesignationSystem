@@ -96,10 +96,7 @@ public class DesignacaoService {
 
     private DesignacaoDTO convertToDTO(Designacao designacao) {
         DesignacaoDTO dto = new DesignacaoDTO();
-        dto.setId(designacao.getId());
-        dto.setDesignacao(designacao.getDesignacao());
-        dto.setNomeCidade(designacao.getCidade().getNome());
-        dto.setStatus(designacao.getStatus());
+        dto = dto.convertedToDTO(designacao);
         return dto;
     }
 }

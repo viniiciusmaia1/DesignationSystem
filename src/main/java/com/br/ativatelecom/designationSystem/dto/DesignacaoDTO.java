@@ -2,6 +2,7 @@ package com.br.ativatelecom.designationSystem.dto;
 
 import com.br.ativatelecom.designationSystem.entity.Designacao;
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,9 @@ public class DesignacaoDTO {
     private String designacao;
     private String nomeCidade;
     private StatusEnum status;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataCriacao;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataUltimaModificacao;
 
     // Dados importantes
@@ -28,13 +31,18 @@ public class DesignacaoDTO {
     private String circuitIp;
 
     // Dados gerenciais
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataEnvioRb;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataAgendamento;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataAgendado;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataInstalacao;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataHomologacao;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataEntregaOi;
-
 
     private DesignacaoDTO convertToDTO(Designacao designacao) {
         DesignacaoDTO dto = new DesignacaoDTO();
@@ -55,6 +63,10 @@ public class DesignacaoDTO {
         dto.setDataHomologacao(designacao.getDataHomologacao());
         dto.setDataEntregaOi(designacao.getDataEntregaOi());
         return dto;
+    }
+
+    public DesignacaoDTO convertedToDTO(Designacao designacao) {
+        return convertToDTO(designacao);
     }
 
     public DesignacaoDTO(Long id, String designacao, String nomeCidade, StatusEnum status) {
