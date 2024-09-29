@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -153,6 +154,21 @@ public class DesignacaoService {
         if (dto.getCircuitIp() != null) {
             existente.setCircuitIp(dto.getCircuitIp());
         }
+
+        Designacao updatedDesignacao = designacaoRepository.save(existente);
+        return convertToDTO(updatedDesignacao);
+    }
+
+    public DesignacaoDTO atualizarAgendamento(Long id, LocalDateTime dataAgendado) {
+        Designacao existente = designacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+
+        if (dataAgendado.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("A data agendada não pode ser anterior à data atual");
+        }
+
+        existente.setDataAgendado(dataAgendado);
+        existente.setDataAgendamento(LocalDateTime.now());
 
         Designacao updatedDesignacao = designacaoRepository.save(existente);
         return convertToDTO(updatedDesignacao);

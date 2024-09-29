@@ -89,7 +89,7 @@ public class Designacao {
     private void atualizarDatasPorStatus() {
         LocalDateTime agora = LocalDateTime.now();
         switch (this.status) {
-            case AGENDADO -> this.dataAgendado = agora;
+            case AGENDADO -> this.dataAgendamento = agora;
             case INSTALADO -> this.dataInstalacao = agora;
             case HOMOLOGADO -> this.dataHomologacao = agora;
             case ENTREGUE_PORTAL_OI -> this.dataEntregaOi = agora;
