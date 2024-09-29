@@ -2,9 +2,11 @@ package com.br.ativatelecom.designationSystem.service;
 
 import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
 import com.br.ativatelecom.designationSystem.entity.Cidade;
+import com.br.ativatelecom.designationSystem.entity.Cliente;
 import com.br.ativatelecom.designationSystem.entity.Designacao;
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
 import com.br.ativatelecom.designationSystem.repository.CidadeRepository;
+import com.br.ativatelecom.designationSystem.repository.ClienteRepository;
 import com.br.ativatelecom.designationSystem.repository.DesignacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,21 +22,47 @@ public class DesignacaoService {
 
     private final DesignacaoRepository designacaoRepository;
     private final CidadeRepository cidadeRepository;
+    private final ClienteRepository clienteRepository;
 
     @Autowired
-    public DesignacaoService(DesignacaoRepository designacaoRepository, CidadeRepository cidadeRepository) {
+    public DesignacaoService(DesignacaoRepository designacaoRepository, CidadeRepository cidadeRepository, ClienteRepository clienteRepository) {
         this.designacaoRepository = designacaoRepository;
         this.cidadeRepository = cidadeRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     public DesignacaoDTO criarDesignacao(DesignacaoDTO dto) {
         validarDesignacaoUnica(dto.getDesignacao());
+
+        Cliente cliente = encontrarOuCriarCliente(dto.getClienteNome());
+
         Cidade cidade = encontrarOuCriarCidade(dto.getNomeCidade());
-        Designacao designacao = new Designacao(dto.getDesignacao());
+
+        Designacao designacao = new Designacao();
+        designacao.setDesignacao(dto.getDesignacao());
         designacao.setCidade(cidade);
+        designacao.setCliente(cliente);
+
         Designacao savedDesignacao = designacaoRepository.save(designacao);
-        System.out.println("Nome da cidade recebido: " + dto.getNomeCidade());
+
         return convertToDTO(savedDesignacao);
+    }
+
+    public DesignacaoDTO atualizarCliente(Long id, Long clienteId) {
+        Designacao existente = designacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+
+        if (clienteId == null) {
+            throw new IllegalArgumentException("ID do cliente não pode ser nulo");
+        }
+
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
+        existente.setCliente(cliente);
+
+        Designacao updatedDesignacao = designacaoRepository.save(existente);
+        return convertToDTO(updatedDesignacao);
     }
 
     public DesignacaoDTO buscarPorId(Long id) {
@@ -91,6 +119,15 @@ public class DesignacaoService {
                     Cidade novaCidade = new Cidade();
                     novaCidade.setNome(nomeCidade);
                     return cidadeRepository.save(novaCidade);
+                });
+    }
+
+    private Cliente encontrarOuCriarCliente(String nomeCliente) {
+        return clienteRepository.findByNomeIgnoreCase(nomeCliente)
+                .orElseGet(() -> {
+                    Cliente novoCliente = new Cliente();
+                    novoCliente.setNome(nomeCliente);
+                    return clienteRepository.save(novoCliente);
                 });
     }
 

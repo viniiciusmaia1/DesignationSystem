@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/designacoes")
@@ -78,4 +79,16 @@ public class DesignacaoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping("/{id}/cliente")
+    public ResponseEntity<DesignacaoDTO> atualizarCliente(@PathVariable Long id, @RequestBody Map<String, Long> payload) {
+        try {
+            Long clienteId = payload.get("clienteId");
+            DesignacaoDTO updatedDesignacao = designacaoService.atualizarCliente(id, clienteId);
+            return ResponseEntity.ok(updatedDesignacao);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

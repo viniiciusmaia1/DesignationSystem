@@ -28,6 +28,10 @@ public class Designacao {
     @Column(name = "data_ultima_modificacao")
     private LocalDateTime dataUltimaModificacao;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cliente", referencedColumnName = "id", nullable = false)
+    private Cliente cliente;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private StatusEnum status;
@@ -96,5 +100,9 @@ public class Designacao {
 
     public String getCidadeNome() {
         return cidade != null ? cidade.getNome() : null;
+    }
+
+    public String getClienteNome() {
+        return cliente != null ? cliente.getNome() : null;
     }
 }
