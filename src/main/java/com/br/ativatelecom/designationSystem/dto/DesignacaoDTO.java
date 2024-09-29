@@ -27,7 +27,7 @@ public class DesignacaoDTO {
     // Dados importantes
     private Integer cvlan;
     private Integer svlan;
-    private Integer ipWan;
+    private String ipWan;
     private String circuitIp;
 
     // Dados gerenciais
