@@ -68,4 +68,14 @@ public class DesignacaoController {
         List<DesignacaoDTO> designacoes = designacaoService.listarDesignacoes(page, size);
         return ResponseEntity.ok(designacoes);
     }
+
+    @PutMapping("/{id}/dados-tecnicos")
+    public ResponseEntity<DesignacaoDTO> atualizarDadosTecnicos(@PathVariable Long id, @RequestBody DesignacaoDTO dto) {
+        try {
+            DesignacaoDTO updatedDesignacao = designacaoService.atualizarDadosTecnicos(id, dto);
+            return ResponseEntity.ok(updatedDesignacao);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

@@ -99,4 +99,25 @@ public class DesignacaoService {
         dto = dto.convertedToDTO(designacao);
         return dto;
     }
+
+    public DesignacaoDTO atualizarDadosTecnicos(Long id, DesignacaoDTO dto) {
+        Designacao existente = designacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+
+        if (dto.getCvlan() != null) {
+            existente.setCvlan(dto.getCvlan());
+        }
+        if (dto.getSvlan() != null) {
+            existente.setSvlan(dto.getSvlan());
+        }
+        if (dto.getIpWan() != null) {
+            existente.setIpWan(dto.getIpWan());
+        }
+        if (dto.getCircuitIp() != null) {
+            existente.setCircuitIp(dto.getCircuitIp());
+        }
+
+        Designacao updatedDesignacao = designacaoRepository.save(existente);
+        return convertToDTO(updatedDesignacao);
+    }
 }
