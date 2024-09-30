@@ -4,10 +4,12 @@ import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
 import com.br.ativatelecom.designationSystem.entity.Cidade;
 import com.br.ativatelecom.designationSystem.entity.Cliente;
 import com.br.ativatelecom.designationSystem.entity.Designacao;
+import com.br.ativatelecom.designationSystem.entity.Parceiro;
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
 import com.br.ativatelecom.designationSystem.repository.CidadeRepository;
 import com.br.ativatelecom.designationSystem.repository.ClienteRepository;
 import com.br.ativatelecom.designationSystem.repository.DesignacaoRepository;
+import com.br.ativatelecom.designationSystem.repository.ParceiroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,12 +26,14 @@ public class DesignacaoService {
     private final DesignacaoRepository designacaoRepository;
     private final CidadeRepository cidadeRepository;
     private final ClienteRepository clienteRepository;
+    private final ParceiroRepository parceiroRepository;
 
     @Autowired
-    public DesignacaoService(DesignacaoRepository designacaoRepository, CidadeRepository cidadeRepository, ClienteRepository clienteRepository) {
+    public DesignacaoService(DesignacaoRepository designacaoRepository, CidadeRepository cidadeRepository, ClienteRepository clienteRepository, ParceiroRepository parceiroRepository) {
         this.designacaoRepository = designacaoRepository;
         this.cidadeRepository = cidadeRepository;
         this.clienteRepository = clienteRepository;
+        this.parceiroRepository = parceiroRepository;
     }
 
     public DesignacaoDTO criarDesignacao(DesignacaoDTO dto) {
@@ -39,10 +43,13 @@ public class DesignacaoService {
 
         Cidade cidade = encontrarOuCriarCidade(dto.getNomeCidade());
 
+        Parceiro parceiro = encontrarOuCriarParceiro(dto.getParceiroNome());
+
         Designacao designacao = new Designacao();
         designacao.setDesignacao(dto.getDesignacao());
         designacao.setCidade(cidade);
         designacao.setCliente(cliente);
+        designacao.setParceiro(parceiro);
 
         Designacao savedDesignacao = designacaoRepository.save(designacao);
 
@@ -120,6 +127,15 @@ public class DesignacaoService {
                     Cidade novaCidade = new Cidade();
                     novaCidade.setNome(nomeCidade);
                     return cidadeRepository.save(novaCidade);
+                });
+    }
+
+    private Parceiro encontrarOuCriarParceiro(String nomeParceiro) {
+        return parceiroRepository.findByNomeIgnoreCase(nomeParceiro)
+                .orElseGet(() -> {
+                    Parceiro novoParceiro = new Parceiro();
+                    novoParceiro.setNome(nomeParceiro);
+                    return parceiroRepository.save(novoParceiro);
                 });
     }
 

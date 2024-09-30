@@ -37,8 +37,12 @@ public class Designacao {
     private StatusEnum status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cidade", referencedColumnName = "id")
+    @JoinColumn(name = "id_cidade", referencedColumnName = "id", nullable = false)
     private Cidade cidade;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_parceiro", referencedColumnName = "id", nullable = false)
+    private Parceiro parceiro;
 
     // Dados importantes
     private Integer cvlan;
@@ -54,12 +58,13 @@ public class Designacao {
     private LocalDateTime dataHomologacao;
     private LocalDateTime dataEntregaOi;
 
-    public Designacao(String designacao, Cidade cidade) {
+    public Designacao(String designacao, Cidade cidade, Parceiro parceiro) {
         this.designacao = designacao;
         this.cidade = cidade;
         this.dataCriacao = LocalDateTime.now();
         this.dataUltimaModificacao = LocalDateTime.now();
         this.status = StatusEnum.VIABILIDADE;
+        this.parceiro = parceiro;
     }
 
     public Designacao(String designacao) {
@@ -104,5 +109,9 @@ public class Designacao {
 
     public String getClienteNome() {
         return cliente != null ? cliente.getNome() : null;
+    }
+
+    public String getParceiroNome() {
+        return parceiro != null ? parceiro.getNome() : null;
     }
 }

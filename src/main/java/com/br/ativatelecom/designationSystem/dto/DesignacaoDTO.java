@@ -24,8 +24,14 @@ import java.time.LocalDateTime;
         private LocalDateTime dataCriacao;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
         private LocalDateTime dataUltimaModificacao;
+
+        //Cliente
         private String clienteNome;
         private Long clienteId;
+
+        //Parceiro
+        private String parceiroNome;
+        private Long parceiroId;
 
         // Dados importantes
         private Integer cvlan;
@@ -67,6 +73,8 @@ import java.time.LocalDateTime;
             dto.setCircuitIp(designacao.getCircuitIp());
             dto.setClienteNome(designacao.getCliente() != null ? designacao.getCliente().getNome() : null);
             dto.setClienteId(designacao.getCliente() != null ? designacao.getCliente().getId() : null);
+            dto.setParceiroId(designacao.getParceiro().getId());
+            dto.setParceiroNome(designacao.getParceiro() != null ? designacao.getParceiro().getNome() : null);
 
             return dto;
         }
@@ -75,12 +83,13 @@ import java.time.LocalDateTime;
             return convertToDTO(designacao);
         }
 
-        public DesignacaoDTO(Long id, String designacao, String nomeCidade, StatusEnum status, Cliente cliente) {
+        public DesignacaoDTO(Long id, String designacao, String nomeCidade, StatusEnum status, Cliente cliente, String nomeParceiro) {
             this.id = id;
             this.designacao = designacao;
             this.nomeCidade = nomeCidade;
             this.clienteNome = cliente.getNome();
             this.status = status;
+            this.parceiroNome = nomeParceiro;
         }
 
         public Designacao toEntity() {
