@@ -1,10 +1,7 @@
 package com.br.ativatelecom.designationSystem.controller;
 
-import com.br.ativatelecom.designationSystem.dto.ClienteDTO;
 import com.br.ativatelecom.designationSystem.dto.ParceiroDTO;
-import com.br.ativatelecom.designationSystem.entity.Cliente;
 import com.br.ativatelecom.designationSystem.entity.Parceiro;
-import com.br.ativatelecom.designationSystem.repository.ClienteRepository;
 import com.br.ativatelecom.designationSystem.repository.ParceiroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
