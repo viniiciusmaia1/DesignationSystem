@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/clientes")
+@RequestMapping("/api/agendamento")
 public class AgendamentoController {
 
     private final DesignacaoService designacaoService;
@@ -17,7 +17,7 @@ public class AgendamentoController {
         this.designacaoService = designacaoService;
     }
 
-    @PutMapping("/{id}/agendamento")
+    @PutMapping("/{id}")
     public ResponseEntity<DesignacaoDTO> atualizarAgendamento(@PathVariable Long id, @RequestBody DesignacaoDTO dto) {
         try {
             DesignacaoDTO updatedDesignacao = designacaoService.atualizarAgendamento(id, dto.getDataAgendado());
