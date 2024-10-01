@@ -1,35 +1,48 @@
 package com.br.ativatelecom.designationSystem.controller;
 
+import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
 import com.br.ativatelecom.designationSystem.dto.ParceiroDTO;
 import com.br.ativatelecom.designationSystem.entity.Parceiro;
+import com.br.ativatelecom.designationSystem.repository.DesignacaoRepository;
 import com.br.ativatelecom.designationSystem.repository.ParceiroRepository;
+import com.br.ativatelecom.designationSystem.service.DesignacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/parceiros")
 public class ParceiroController {
 
-    private final ParceiroRepository parceiroRepository;
+    private final DesignacaoService designacaoService;
 
     @Autowired
-    public ParceiroController(ParceiroRepository parceiroRepository) {
-        this.parceiroRepository = parceiroRepository;
+    public ParceiroController(DesignacaoService designacaoService) {
+        this.designacaoService = designacaoService;
     }
 
     @GetMapping
     public ResponseEntity<List<ParceiroDTO>> listarParceiros() {
-        List<Parceiro> parceiros = parceiroRepository.findAll();
+        List<Parceiro> parceiros = designacaoService.listarParceiros();
         List<ParceiroDTO> parceirosDTO = parceiros.stream()
                 .map(parceiro -> new ParceiroDTO(parceiro.getId(), parceiro.getNome()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(parceirosDTO);
+    }
+
+    @PutMapping("/{designacaoId}/parceiro")
+    public ResponseEntity<DesignacaoDTO> atualizarParceiro(@PathVariable Long designacaoId, @RequestBody Map<String, Long> payload) {
+        try {
+            Long parceiroId = payload.get("parceiroId");
+            DesignacaoDTO updatedDesignacao = designacaoService.atualizarParceiro(designacaoId, parceiroId);
+            return ResponseEntity.ok(updatedDesignacao);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
 

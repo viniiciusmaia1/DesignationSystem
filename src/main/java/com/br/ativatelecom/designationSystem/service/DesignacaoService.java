@@ -189,4 +189,25 @@ public class DesignacaoService {
         Designacao updatedDesignacao = designacaoRepository.save(existente);
         return convertToDTO(updatedDesignacao);
     }
+
+    public DesignacaoDTO atualizarParceiro(Long designacaoId, Long parceiroId) {
+        Designacao existente = designacaoRepository.findById(designacaoId)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+
+        if (parceiroId == null) {
+            throw new IllegalArgumentException("ID do parceiro não pode ser nulo");
+        }
+
+        Parceiro parceiro = parceiroRepository.findById(parceiroId)
+                .orElseThrow(() -> new RuntimeException("Parceiro não encontrado"));
+
+        existente.setParceiro(parceiro);
+
+        Designacao updatedDesignacao = designacaoRepository.save(existente);
+        return convertToDTO(updatedDesignacao);
+    }
+
+    public List<Parceiro> listarParceiros() {
+        return parceiroRepository.findAll();
+    }
 }
