@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/parceiro")
+@RequestMapping("/api/parceiros")
 public class ParceiroController {
 
     private final ParceiroRepository parceiroRepository;
