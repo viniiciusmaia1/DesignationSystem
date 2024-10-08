@@ -36,6 +36,7 @@ public class DesignacaoService {
         this.parceiroRepository = parceiroRepository;
     }
 
+    //Designacao:
     public DesignacaoDTO criarDesignacao(DesignacaoDTO dto) {
         validarDesignacaoUnica(dto.getDesignacao());
 
@@ -56,28 +57,12 @@ public class DesignacaoService {
         return convertToDTO(savedDesignacao);
     }
 
-    public DesignacaoDTO atualizarCliente(Long id, Long clienteId) {
-        Designacao existente = designacaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
-
-        if (clienteId == null) {
-            throw new IllegalArgumentException("ID do cliente não pode ser nulo");
-        }
-
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-
-        existente.setCliente(cliente);
-
-        Designacao updatedDesignacao = designacaoRepository.save(existente);
-        return convertToDTO(updatedDesignacao);
-    }
-
     public DesignacaoDTO buscarPorId(Long id) {
         Designacao designacao = designacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
         return convertToDTO(designacao);
     }
+
 
     public DesignacaoDTO atualizarDesignacao(Long id, DesignacaoDTO dto) {
         Designacao existente = designacaoRepository.findById(id)
@@ -107,36 +92,34 @@ public class DesignacaoService {
                 .collect(Collectors.toList());
     }
 
-    public DesignacaoDTO atualizarStatus(Long id, StatusEnum novoStatus) {
-        Designacao designacao = designacaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
-        designacao.atualizarStatus(novoStatus);
-        Designacao updatedDesignacao = designacaoRepository.save(designacao);
-        return convertToDTO(updatedDesignacao);
-    }
-
     private void validarDesignacaoUnica(String nome) {
         if (designacaoRepository.findByDesignacao(nome).isPresent()) {
             throw new RuntimeException("Já existe uma designação com o nome: " + nome);
         }
     }
 
-    private Cidade encontrarOuCriarCidade(String nomeCidade) {
-        return cidadeRepository.findByNomeIgnoreCase(nomeCidade)
-                .orElseGet(() -> {
-                    Cidade novaCidade = new Cidade();
-                    novaCidade.setNome(nomeCidade);
-                    return cidadeRepository.save(novaCidade);
-                });
+    private DesignacaoDTO convertToDTO(Designacao designacao) {
+        DesignacaoDTO dto = new DesignacaoDTO();
+        dto = dto.convertedToDTO(designacao);
+        return dto;
     }
 
-    private Parceiro encontrarOuCriarParceiro(String nomeParceiro) {
-        return parceiroRepository.findByNomeIgnoreCase(nomeParceiro)
-                .orElseGet(() -> {
-                    Parceiro novoParceiro = new Parceiro();
-                    novoParceiro.setNome(nomeParceiro);
-                    return parceiroRepository.save(novoParceiro);
-                });
+    //Cliente
+    public DesignacaoDTO atualizarCliente(Long id, Long clienteId) {
+        Designacao existente = designacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+
+        if (clienteId == null) {
+            throw new IllegalArgumentException("ID do cliente não pode ser nulo");
+        }
+
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
+        existente.setCliente(cliente);
+
+        Designacao updatedDesignacao = designacaoRepository.save(existente);
+        return convertToDTO(updatedDesignacao);
     }
 
     private Cliente encontrarOuCriarCliente(String nomeCliente) {
@@ -148,46 +131,34 @@ public class DesignacaoService {
                 });
     }
 
-    private DesignacaoDTO convertToDTO(Designacao designacao) {
-        DesignacaoDTO dto = new DesignacaoDTO();
-        dto = dto.convertedToDTO(designacao);
-        return dto;
-    }
 
-    public DesignacaoDTO atualizarDadosTecnicos(Long id, DesignacaoDTO dto) {
-        Designacao existente = designacaoRepository.findById(id)
+    //Status
+    public DesignacaoDTO atualizarStatus(Long id, StatusEnum novoStatus) {
+        Designacao designacao = designacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
-
-        if (dto.getCvlan() != null) {
-            existente.setCvlan(dto.getCvlan());
-        }
-        if (dto.getSvlan() != null) {
-            existente.setSvlan(dto.getSvlan());
-        }
-        if (dto.getIpWan() != null) {
-            existente.setIpWan(dto.getIpWan());
-        }
-        if (dto.getCircuitIp() != null) {
-            existente.setCircuitIp(dto.getCircuitIp());
-        }
-
-        Designacao updatedDesignacao = designacaoRepository.save(existente);
+        designacao.atualizarStatus(novoStatus);
+        Designacao updatedDesignacao = designacaoRepository.save(designacao);
         return convertToDTO(updatedDesignacao);
     }
 
-    public DesignacaoDTO atualizarAgendamento(Long id, LocalDateTime dataAgendado) {
-        Designacao existente = designacaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+    //Cidade
+    private Cidade encontrarOuCriarCidade(String nomeCidade) {
+        return cidadeRepository.findByNomeIgnoreCase(nomeCidade)
+                .orElseGet(() -> {
+                    Cidade novaCidade = new Cidade();
+                    novaCidade.setNome(nomeCidade);
+                    return cidadeRepository.save(novaCidade);
+                });
+    }
 
-        if (dataAgendado.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("A data agendada não pode ser anterior à data atual");
-        }
-
-        existente.setDataAgendado(dataAgendado);
-        existente.setDataAgendamento(LocalDateTime.now());
-
-        Designacao updatedDesignacao = designacaoRepository.save(existente);
-        return convertToDTO(updatedDesignacao);
+    //Parceiro
+    private Parceiro encontrarOuCriarParceiro(String nomeParceiro) {
+        return parceiroRepository.findByNomeIgnoreCase(nomeParceiro)
+                .orElseGet(() -> {
+                    Parceiro novoParceiro = new Parceiro();
+                    novoParceiro.setNome(nomeParceiro);
+                    return parceiroRepository.save(novoParceiro);
+                });
     }
 
     public DesignacaoDTO atualizarParceiro(Long designacaoId, Long parceiroId) {
@@ -210,4 +181,43 @@ public class DesignacaoService {
     public List<Parceiro> listarParceiros() {
         return parceiroRepository.findAll();
     }
+
+    //Dados tecnicos
+    public DesignacaoDTO atualizarDadosTecnicos(Long id, DesignacaoDTO dto) {
+        Designacao existente = designacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+
+        if (dto.getCvlan() != null) {
+            existente.setCvlan(dto.getCvlan());
+        }
+        if (dto.getSvlan() != null) {
+            existente.setSvlan(dto.getSvlan());
+        }
+        if (dto.getIpWan() != null) {
+            existente.setIpWan(dto.getIpWan());
+        }
+        if (dto.getCircuitIp() != null) {
+            existente.setCircuitIp(dto.getCircuitIp());
+        }
+
+        Designacao updatedDesignacao = designacaoRepository.save(existente);
+        return convertToDTO(updatedDesignacao);
+    }
+
+    //Agendamento
+    public DesignacaoDTO atualizarAgendamento(Long id, LocalDateTime dataAgendado) {
+        Designacao existente = designacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+
+        if (dataAgendado.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("A data agendada não pode ser anterior à data atual");
+        }
+
+        existente.setDataAgendado(dataAgendado);
+        existente.setDataAgendamento(LocalDateTime.now());
+
+        Designacao updatedDesignacao = designacaoRepository.save(existente);
+        return convertToDTO(updatedDesignacao);
+    }
+
 }

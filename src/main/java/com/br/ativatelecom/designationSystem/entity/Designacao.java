@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "DESIGNACOES")
@@ -44,13 +45,16 @@ public class Designacao {
     @JoinColumn(name = "id_parceiro", referencedColumnName = "id", nullable = false)
     private Parceiro parceiro;
 
+    @OneToMany(mappedBy = "designacao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Observacao> observacoes;
+
     // Dados importantes
     private Integer cvlan;
     private Integer svlan;
     private String ipWan;
     private String circuitIp;
 
-    // Dados gerenciais
+    // Dados de datas
     private LocalDateTime dataEnvioRb;
     private LocalDateTime dataAgendamento;
     private LocalDateTime dataAgendado;
@@ -58,13 +62,23 @@ public class Designacao {
     private LocalDateTime dataHomologacao;
     private LocalDateTime dataEntregaOi;
 
-    public Designacao(String designacao, Cidade cidade, Parceiro parceiro) {
+    // Dados Financeiros
+
+
+    public Designacao(String designacao, Cidade cidade, Parceiro parceiro, List<Observacao> observacoes) {
         this.designacao = designacao;
         this.cidade = cidade;
         this.dataCriacao = LocalDateTime.now();
         this.dataUltimaModificacao = LocalDateTime.now();
         this.status = StatusEnum.VIABILIDADE;
         this.parceiro = parceiro;
+        this.observacoes = observacoes;
+
+        if (observacoes != null) {
+            for (Observacao obs : observacoes) {
+                obs.setDesignacao(this);
+            }
+        }
     }
 
     public Designacao(String designacao) {
@@ -72,6 +86,7 @@ public class Designacao {
         this.dataCriacao = LocalDateTime.now();
         this.dataUltimaModificacao = LocalDateTime.now();
         this.status = StatusEnum.VIABILIDADE;
+        this.observacoes = null;
     }
 
     @PreUpdate
