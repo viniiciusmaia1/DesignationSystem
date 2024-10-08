@@ -19,7 +19,7 @@ public class ObservacaoService {
         this.observacaoRepository = observacaoRepository;
     }
 
-    public Observacao criarObservacao(Long designacaoId, String titulo, String texto) {
+    public Observacao createObservation(Long designacaoId, String titulo, String texto) {
         Observacao observacao = new Observacao();
         observacao.setTitulo(titulo);
         observacao.setObservacao(texto);
@@ -32,18 +32,18 @@ public class ObservacaoService {
         return observacaoRepository.save(observacao);
     }
 
-    public List<Observacao> listarObservacoesPorDesignacao(Long designacaoId) {
+    public List<Observacao> listAllObservationsForDesignations(Long designacaoId) {
         return observacaoRepository.findByDesignacaoId(designacaoId);
     }
 
-    public void removerObservacao(Long id) {
+    public void deleteObservations(Long id) {
         if (!observacaoRepository.existsById(id)) {
             throw new RuntimeException("Observação não encontrada");
         }
         observacaoRepository.deleteById(id);
     }
 
-    public Observacao atualizarObservacao(Long id, String titulo, String texto) {
+    public Observacao updateDesignacao(Long id, String titulo, String texto) {
         Observacao observacao = observacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Observação não encontrada"));
         observacao.setTitulo(titulo);

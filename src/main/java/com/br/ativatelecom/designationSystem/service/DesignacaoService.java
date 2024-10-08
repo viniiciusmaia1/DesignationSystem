@@ -37,14 +37,14 @@ public class DesignacaoService {
     }
 
     //Designacao:
-    public DesignacaoDTO criarDesignacao(DesignacaoDTO dto) {
-        validarDesignacaoUnica(dto.getDesignacao());
+    public DesignacaoDTO createDesignation(DesignacaoDTO dto) {
+        UniqueDesignationVerification(dto.getDesignacao());
 
-        Cliente cliente = encontrarOuCriarCliente(dto.getClienteNome());
+        Cliente cliente = findOrCreateCliente(dto.getClienteNome());
 
-        Cidade cidade = encontrarOuCriarCidade(dto.getNomeCidade());
+        Cidade cidade = findOrCreateCidade(dto.getNomeCidade());
 
-        Parceiro parceiro = encontrarOuCriarParceiro(dto.getParceiroNome());
+        Parceiro parceiro = findOrCreateParceiro(dto.getParceiroNome());
 
         Designacao designacao = new Designacao();
         designacao.setDesignacao(dto.getDesignacao());
@@ -57,34 +57,34 @@ public class DesignacaoService {
         return convertToDTO(savedDesignacao);
     }
 
-    public DesignacaoDTO buscarPorId(Long id) {
+    public DesignacaoDTO findById(Long id) {
         Designacao designacao = designacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
         return convertToDTO(designacao);
     }
 
 
-    public DesignacaoDTO atualizarDesignacao(Long id, DesignacaoDTO dto) {
+    public DesignacaoDTO updateDesignation(Long id, DesignacaoDTO dto) {
         Designacao existente = designacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
         if (!existente.getDesignacao().equals(dto.getDesignacao())) {
-            validarDesignacaoUnica(dto.getDesignacao());
+            UniqueDesignationVerification(dto.getDesignacao());
         }
         existente.setDesignacao(dto.getDesignacao());
-        Cidade cidade = encontrarOuCriarCidade(dto.getNomeCidade());
+        Cidade cidade = findOrCreateCidade(dto.getNomeCidade());
         existente.setCidade(cidade);
         Designacao updatedDesignacao = designacaoRepository.save(existente);
         return convertToDTO(updatedDesignacao);
     }
 
-    public void deletarDesignacao(Long id) {
+    public void deleteDesignation(Long id) {
         if (!designacaoRepository.existsById(id)) {
             throw new RuntimeException("Designação não encontrada");
         }
         designacaoRepository.deleteById(id);
     }
 
-    public List<DesignacaoDTO> listarDesignacoes(int page, int size) {
+    public List<DesignacaoDTO> listAllDesignations(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Designacao> designacoesPage = designacaoRepository.findAll(pageable);
         return designacoesPage.stream()
@@ -92,7 +92,7 @@ public class DesignacaoService {
                 .collect(Collectors.toList());
     }
 
-    private void validarDesignacaoUnica(String nome) {
+    private void UniqueDesignationVerification(String nome) {
         if (designacaoRepository.findByDesignacao(nome).isPresent()) {
             throw new RuntimeException("Já existe uma designação com o nome: " + nome);
         }
@@ -105,7 +105,7 @@ public class DesignacaoService {
     }
 
     //Cliente
-    public DesignacaoDTO atualizarCliente(Long id, Long clienteId) {
+    public DesignacaoDTO updateCliente(Long id, Long clienteId) {
         Designacao existente = designacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
 
@@ -122,7 +122,7 @@ public class DesignacaoService {
         return convertToDTO(updatedDesignacao);
     }
 
-    private Cliente encontrarOuCriarCliente(String nomeCliente) {
+    private Cliente findOrCreateCliente(String nomeCliente) {
         return clienteRepository.findByNomeIgnoreCase(nomeCliente)
                 .orElseGet(() -> {
                     Cliente novoCliente = new Cliente();
@@ -133,7 +133,7 @@ public class DesignacaoService {
 
 
     //Status
-    public DesignacaoDTO atualizarStatus(Long id, StatusEnum novoStatus) {
+    public DesignacaoDTO updateStatus(Long id, StatusEnum novoStatus) {
         Designacao designacao = designacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
         designacao.atualizarStatus(novoStatus);
@@ -142,7 +142,7 @@ public class DesignacaoService {
     }
 
     //Cidade
-    private Cidade encontrarOuCriarCidade(String nomeCidade) {
+    private Cidade findOrCreateCidade(String nomeCidade) {
         return cidadeRepository.findByNomeIgnoreCase(nomeCidade)
                 .orElseGet(() -> {
                     Cidade novaCidade = new Cidade();
@@ -152,7 +152,7 @@ public class DesignacaoService {
     }
 
     //Parceiro
-    private Parceiro encontrarOuCriarParceiro(String nomeParceiro) {
+    private Parceiro findOrCreateParceiro(String nomeParceiro) {
         return parceiroRepository.findByNomeIgnoreCase(nomeParceiro)
                 .orElseGet(() -> {
                     Parceiro novoParceiro = new Parceiro();
@@ -161,7 +161,7 @@ public class DesignacaoService {
                 });
     }
 
-    public DesignacaoDTO atualizarParceiro(Long designacaoId, Long parceiroId) {
+    public DesignacaoDTO updateParceiro(Long designacaoId, Long parceiroId) {
         Designacao existente = designacaoRepository.findById(designacaoId)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
 
@@ -178,12 +178,12 @@ public class DesignacaoService {
         return convertToDTO(updatedDesignacao);
     }
 
-    public List<Parceiro> listarParceiros() {
+    public List<Parceiro> listAllParceiros() {
         return parceiroRepository.findAll();
     }
 
     //Dados tecnicos
-    public DesignacaoDTO atualizarDadosTecnicos(Long id, DesignacaoDTO dto) {
+    public DesignacaoDTO updateTechnicalsInfo(Long id, DesignacaoDTO dto) {
         Designacao existente = designacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
 
@@ -205,7 +205,7 @@ public class DesignacaoService {
     }
 
     //Agendamento
-    public DesignacaoDTO atualizarAgendamento(Long id, LocalDateTime dataAgendado) {
+    public DesignacaoDTO updateAgendamento(Long id, LocalDateTime dataAgendado) {
         Designacao existente = designacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
 

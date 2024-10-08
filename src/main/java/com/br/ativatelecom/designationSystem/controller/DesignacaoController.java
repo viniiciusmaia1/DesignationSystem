@@ -25,7 +25,7 @@ public class DesignacaoController {
     @PostMapping
     public ResponseEntity<DesignacaoDTO> criarDesignacao(@RequestBody DesignacaoDTO request) {
         try {
-            DesignacaoDTO novaDesignacao = designacaoService.criarDesignacao(request);
+            DesignacaoDTO novaDesignacao = designacaoService.createDesignation(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(novaDesignacao);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
@@ -35,7 +35,7 @@ public class DesignacaoController {
     @GetMapping("/{id}")
     public ResponseEntity<DesignacaoDTO> buscarDesignacao(@PathVariable Long id) {
         try {
-            DesignacaoDTO designacao = designacaoService.buscarPorId(id);
+            DesignacaoDTO designacao = designacaoService.findById(id);
             return ResponseEntity.ok(designacao);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -45,7 +45,7 @@ public class DesignacaoController {
     @PutMapping("/{id}/status")
     public ResponseEntity<DesignacaoDTO> atualizarStatus(@PathVariable Long id, @RequestBody UpdateStatusRequest request) {
         try {
-            DesignacaoDTO updatedDesignacao = designacaoService.atualizarStatus(id, request.getStatus());
+            DesignacaoDTO updatedDesignacao = designacaoService.updateStatus(id, request.getStatus());
             return ResponseEntity.ok(updatedDesignacao);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -55,7 +55,7 @@ public class DesignacaoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarDesignacao(@PathVariable Long id) {
         try {
-            designacaoService.deletarDesignacao(id);
+            designacaoService.deleteDesignation(id);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -66,14 +66,14 @@ public class DesignacaoController {
     public ResponseEntity<List<DesignacaoDTO>> listarDesignacoes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size) {
-        List<DesignacaoDTO> designacoes = designacaoService.listarDesignacoes(page, size);
+        List<DesignacaoDTO> designacoes = designacaoService.listAllDesignations(page, size);
         return ResponseEntity.ok(designacoes);
     }
 
     @PutMapping("/{id}/dados-tecnicos")
     public ResponseEntity<DesignacaoDTO> atualizarDadosTecnicos(@PathVariable Long id, @RequestBody DesignacaoDTO dto) {
         try {
-            DesignacaoDTO updatedDesignacao = designacaoService.atualizarDadosTecnicos(id, dto);
+            DesignacaoDTO updatedDesignacao = designacaoService.updateTechnicalsInfo(id, dto);
             return ResponseEntity.ok(updatedDesignacao);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -84,7 +84,7 @@ public class DesignacaoController {
     public ResponseEntity<DesignacaoDTO> atualizarCliente(@PathVariable Long id, @RequestBody Map<String, Long> payload) {
         try {
             Long clienteId = payload.get("clienteId");
-            DesignacaoDTO updatedDesignacao = designacaoService.atualizarCliente(id, clienteId);
+            DesignacaoDTO updatedDesignacao = designacaoService.updateCliente(id, clienteId);
             return ResponseEntity.ok(updatedDesignacao);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

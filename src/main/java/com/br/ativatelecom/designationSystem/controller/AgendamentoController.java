@@ -20,7 +20,7 @@ public class AgendamentoController {
     @PutMapping("/{id}")
     public ResponseEntity<DesignacaoDTO> atualizarAgendamento(@PathVariable Long id, @RequestBody DesignacaoDTO dto) {
         try {
-            DesignacaoDTO updatedDesignacao = designacaoService.atualizarAgendamento(id, dto.getDataAgendado());
+            DesignacaoDTO updatedDesignacao = designacaoService.updateAgendamento(id, dto.getDataAgendado());
             return ResponseEntity.ok(updatedDesignacao);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

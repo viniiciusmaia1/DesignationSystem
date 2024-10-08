@@ -24,26 +24,26 @@ public class ObservacaoController {
     @PostMapping("/{designacaoId}")
     public ResponseEntity<Observacao> criarObservacao(@PathVariable Long designacaoId,
                                                       @RequestBody ObservacaoDTO dto) {
-        Observacao novaObservao = observacaoService.criarObservacao(designacaoId, dto.getTítulo(), dto.getTexto());
+        Observacao novaObservao = observacaoService.createObservation(designacaoId, dto.getTítulo(), dto.getTexto());
         return ResponseEntity.status(HttpStatus.CREATED).body(novaObservao);
     }
 
     @GetMapping("/{designaoId}")
     public ResponseEntity<List<Observacao>> listarObservaes(@PathVariable Long designaoId) {
-        List<Observacao> observaes = observacaoService.listarObservacoesPorDesignacao(designaoId);
+        List<Observacao> observaes = observacaoService.listAllObservationsForDesignations(designaoId);
         return ResponseEntity.ok(observaes);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removerObservao(@PathVariable Long id) {
-        observacaoService.removerObservacao(id);
+        observacaoService.deleteObservations(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Observacao> atualizarobservao(@PathVariable Long id,
                                                       @RequestBody ObservacaoDTO dto) {
-        Observacao updatedobservao = observacaoService.atualizarObservacao(id, dto.getTítulo(), dto.getTexto());
+        Observacao updatedobservao = observacaoService.updateDesignacao(id, dto.getTítulo(), dto.getTexto());
         return ResponseEntity.ok(updatedobservao);
     }
 }
