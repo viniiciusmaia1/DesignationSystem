@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 public class DesignacaoService {
 
     private final DesignacaoRepository designacaoRepository;
-    private final CidadeRepository cidadeRepository;
+    private final CidadeService cidadeService;
     private final ClienteRepository clienteRepository;
     private final ParceiroRepository parceiroRepository;
 
     @Autowired
-    public DesignacaoService(DesignacaoRepository designacaoRepository, CidadeRepository cidadeRepository, ClienteRepository clienteRepository, ParceiroRepository parceiroRepository) {
+    public DesignacaoService(DesignacaoRepository designacaoRepository, CidadeService cidadeService, ClienteRepository clienteRepository, ParceiroRepository parceiroRepository) {
         this.designacaoRepository = designacaoRepository;
-        this.cidadeRepository = cidadeRepository;
+        this.cidadeService = cidadeService;
         this.clienteRepository = clienteRepository;
         this.parceiroRepository = parceiroRepository;
     }
@@ -41,9 +41,7 @@ public class DesignacaoService {
         UniqueDesignationVerification(dto.getDesignacao());
 
         Cliente cliente = findOrCreateCliente(dto.getClienteNome());
-
-        Cidade cidade = findOrCreateCidade(dto.getNomeCidade());
-
+        Cidade cidade = cidadeService.findOrCreateCidade(dto.getNomeCidade()); // Uso do novo serviço
         Parceiro parceiro = findOrCreateParceiro(dto.getParceiroNome());
 
         Designacao designacao = new Designacao();
@@ -71,7 +69,7 @@ public class DesignacaoService {
             UniqueDesignationVerification(dto.getDesignacao());
         }
         existente.setDesignacao(dto.getDesignacao());
-        Cidade cidade = findOrCreateCidade(dto.getNomeCidade());
+        Cidade cidade = cidadeService.findOrCreateCidade(dto.getNomeCidade());
         existente.setCidade(cidade);
         Designacao updatedDesignacao = designacaoRepository.save(existente);
         return convertToDTO(updatedDesignacao);
@@ -139,16 +137,6 @@ public class DesignacaoService {
         designacao.atualizarStatus(novoStatus);
         Designacao updatedDesignacao = designacaoRepository.save(designacao);
         return convertToDTO(updatedDesignacao);
-    }
-
-    //Cidade
-    private Cidade findOrCreateCidade(String nomeCidade) {
-        return cidadeRepository.findByNomeIgnoreCase(nomeCidade)
-                .orElseGet(() -> {
-                    Cidade novaCidade = new Cidade();
-                    novaCidade.setNome(nomeCidade);
-                    return cidadeRepository.save(novaCidade);
-                });
     }
 
     //Parceiro
