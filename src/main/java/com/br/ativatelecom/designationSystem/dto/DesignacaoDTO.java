@@ -17,29 +17,26 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DesignacaoDTO {
     private Long id;
+
+    //Dados cadastrais
     private String designacao;
     private String nomeCidade;
     private StatusEnum status;
+    private String parceiroNome;
+    private String clienteNome;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataCriacao;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataUltimaModificacao;
 
-    //Cliente
-    private String clienteNome;
-    private Long clienteId;
-
-    //Parceiro
-    private String parceiroNome;
-    private Long parceiroId;
-
-    // Dados importantes
+    // Dados Tecnicos
     private Integer cvlan;
     private Integer svlan;
     private String ipWan;
     private String circuitIp;
 
-    // Dados gerenciais
+    // Datas
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataEnvioRb;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
@@ -72,8 +69,6 @@ public class DesignacaoDTO {
         dto.setIpWan(designacao.getIpWan());
         dto.setCircuitIp(designacao.getCircuitIp());
         dto.setClienteNome(designacao.getCliente() != null ? designacao.getCliente().getNome() : null);
-        dto.setClienteId(designacao.getCliente() != null ? designacao.getCliente().getId() : null);
-        dto.setParceiroId(designacao.getParceiro().getId());
         dto.setParceiroNome(designacao.getParceiro() != null ? designacao.getParceiro().getNome() : null);
 
         return dto;

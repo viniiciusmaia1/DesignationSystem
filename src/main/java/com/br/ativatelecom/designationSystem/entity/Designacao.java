@@ -63,8 +63,6 @@ public class Designacao {
     private LocalDateTime dataEntregaOi;
 
     // Dados Financeiros
-
-
     public Designacao(String designacao, Cidade cidade, Parceiro parceiro, List<Observacao> observacoes) {
         this.designacao = designacao;
         this.cidade = cidade;
@@ -112,7 +110,7 @@ public class Designacao {
             case AGENDADO -> this.dataAgendamento = agora;
             case INSTALADO -> this.dataInstalacao = agora;
             case HOMOLOGADO -> this.dataHomologacao = agora;
-            case ENTREGUE_PORTAL_OI -> this.dataEntregaOi = agora;
+            case ENTREGUE -> this.dataEntregaOi = agora;
             case ENVIO_RB -> this.dataEnvioRb = agora;
             case AGENDAMENTO -> this.dataAgendamento = agora;
         }
