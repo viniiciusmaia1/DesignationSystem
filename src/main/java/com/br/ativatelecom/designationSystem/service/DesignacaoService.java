@@ -26,14 +26,15 @@ public class DesignacaoService {
     private final DesignacaoRepository designacaoRepository;
     private final CidadeService cidadeService;
     private final ClienteRepository clienteRepository;
-    private final ParceiroRepository parceiroRepository;
+    private final ParceiroService parceiroService;
 
     @Autowired
-    public DesignacaoService(DesignacaoRepository designacaoRepository, CidadeService cidadeService, ClienteRepository clienteRepository, ParceiroRepository parceiroRepository) {
+    public DesignacaoService(DesignacaoRepository designacaoRepository, CidadeService cidadeService,
+                             ClienteRepository clienteRepository, ParceiroService parceiroService) {
         this.designacaoRepository = designacaoRepository;
         this.cidadeService = cidadeService;
         this.clienteRepository = clienteRepository;
-        this.parceiroRepository = parceiroRepository;
+        this.parceiroService = parceiroService;
     }
 
     //Designacao:
@@ -41,8 +42,8 @@ public class DesignacaoService {
         UniqueDesignationVerification(dto.getDesignacao());
 
         Cliente cliente = findOrCreateCliente(dto.getClienteNome());
-        Cidade cidade = cidadeService.findOrCreateCidade(dto.getNomeCidade()); // Uso do novo serviço
-        Parceiro parceiro = findOrCreateParceiro(dto.getParceiroNome());
+        Cidade cidade = cidadeService.findOrCreateCidade(dto.getNomeCidade());
+        Parceiro parceiro = parceiroService.findOrCreateParceiro(dto.getParceiroNome());
 
         Designacao designacao = new Designacao();
         designacao.setDesignacao(dto.getDesignacao());
@@ -54,6 +55,7 @@ public class DesignacaoService {
 
         return convertToDTO(savedDesignacao);
     }
+
 
     public DesignacaoDTO findById(Long id) {
         Designacao designacao = designacaoRepository.findById(id)
@@ -139,16 +141,6 @@ public class DesignacaoService {
         return convertToDTO(updatedDesignacao);
     }
 
-    //Parceiro
-    private Parceiro findOrCreateParceiro(String nomeParceiro) {
-        return parceiroRepository.findByNomeIgnoreCase(nomeParceiro)
-                .orElseGet(() -> {
-                    Parceiro novoParceiro = new Parceiro();
-                    novoParceiro.setNome(nomeParceiro);
-                    return parceiroRepository.save(novoParceiro);
-                });
-    }
-
     public DesignacaoDTO updateParceiro(Long designacaoId, Long parceiroId) {
         Designacao existente = designacaoRepository.findById(designacaoId)
                 .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
@@ -157,17 +149,12 @@ public class DesignacaoService {
             throw new IllegalArgumentException("ID do parceiro não pode ser nulo");
         }
 
-        Parceiro parceiro = parceiroRepository.findById(parceiroId)
-                .orElseThrow(() -> new RuntimeException("Parceiro não encontrado"));
+        Parceiro parceiro = parceiroService.findById(parceiroId);
 
         existente.setParceiro(parceiro);
 
         Designacao updatedDesignacao = designacaoRepository.save(existente);
         return convertToDTO(updatedDesignacao);
-    }
-
-    public List<Parceiro> listAllParceiros() {
-        return parceiroRepository.findAll();
     }
 
     //Dados tecnicos

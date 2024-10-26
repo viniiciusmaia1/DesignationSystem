@@ -1,6 +1,5 @@
 package com.br.ativatelecom.designationSystem.service;
 
-import com.br.ativatelecom.designationSystem.dto.CidadeDTO;
 import com.br.ativatelecom.designationSystem.entity.Cidade;
 import com.br.ativatelecom.designationSystem.repository.CidadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,4 +25,9 @@ public class CidadeService {
                     return cidadeRepository.save(novaCidade);
                 });
     }
+
+    public List<Cidade> listAllCities() {
+        return cidadeRepository.findAll();
+    }
+
 }

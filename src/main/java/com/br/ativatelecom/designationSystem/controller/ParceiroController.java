@@ -4,6 +4,7 @@ import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
 import com.br.ativatelecom.designationSystem.dto.ParceiroDTO;
 import com.br.ativatelecom.designationSystem.entity.Parceiro;
 import com.br.ativatelecom.designationSystem.service.DesignacaoService;
+import com.br.ativatelecom.designationSystem.service.ParceiroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +17,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/parceiros")
 public class ParceiroController {
 
+    private final ParceiroService parceiroService;
     private final DesignacaoService designacaoService;
 
     @Autowired
-    public ParceiroController(DesignacaoService designacaoService) {
+    public ParceiroController(ParceiroService parceiroService, DesignacaoService designacaoService) {
+        this.parceiroService = parceiroService;
         this.designacaoService = designacaoService;
     }
 
     @GetMapping
     public ResponseEntity<List<ParceiroDTO>> listarParceiros() {
-        List<Parceiro> parceiros = designacaoService.listAllParceiros();
+        List<Parceiro> parceiros = parceiroService.listAllParceiros();
         List<ParceiroDTO> parceirosDTO = parceiros.stream()
                 .map(parceiro -> new ParceiroDTO(parceiro.getId(), parceiro.getNome()))
                 .collect(Collectors.toList());
