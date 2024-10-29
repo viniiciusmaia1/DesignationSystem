@@ -6,10 +6,7 @@ import com.br.ativatelecom.designationSystem.entity.Cliente;
 import com.br.ativatelecom.designationSystem.entity.Designacao;
 import com.br.ativatelecom.designationSystem.entity.Parceiro;
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
-import com.br.ativatelecom.designationSystem.repository.CidadeRepository;
-import com.br.ativatelecom.designationSystem.repository.ClienteRepository;
 import com.br.ativatelecom.designationSystem.repository.DesignacaoRepository;
-import com.br.ativatelecom.designationSystem.repository.ParceiroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -104,23 +101,6 @@ public class DesignacaoService {
         return dto;
     }
 
-    //Cliente
-    public DesignacaoDTO updateCliente(Long id, Long clienteId) {
-        Designacao existente = designacaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
-
-        if (clienteId == null) {
-            throw new IllegalArgumentException("ID do cliente não pode ser nulo");
-        }
-
-        Cliente cliente = clienteService.findById(clienteId);
-
-        existente.setCliente(cliente);
-
-        Designacao updatedDesignacao = designacaoRepository.save(existente);
-        return convertToDTO(updatedDesignacao);
-    }
-
 
     //Status
     public DesignacaoDTO updateStatus(Long id, StatusEnum novoStatus) {
@@ -167,6 +147,39 @@ public class DesignacaoService {
 
         Designacao updatedDesignacao = designacaoRepository.save(existente);
         return convertToDTO(updatedDesignacao);
+    }
+
+    //Dados cadastrais
+    public DesignacaoDTO updateCadastralInfo(Long id, DesignacaoDTO dto) {
+        Designacao existente = designacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Designação não encontrada"));
+
+        boolean updated = false;
+
+        if (dto.getClienteNome() != null && !dto.getClienteNome().isEmpty()) {
+            Cliente cliente = clienteService.findOrCreateCliente(dto.getClienteNome());
+            existente.setCliente(cliente);
+            updated = true;
+        }
+
+        if (dto.getNomeCidade() != null && !dto.getNomeCidade().isEmpty()) {
+            Cidade cidade = cidadeService.findOrCreateCidade(dto.getNomeCidade());
+            existente.setCidade(cidade);
+            updated = true;
+        }
+
+        if (dto.getParceiroNome() != null && !dto.getParceiroNome().isEmpty()) {
+            Parceiro parceiro = parceiroService.findOrCreateParceiro(dto.getParceiroNome());
+            existente.setParceiro(parceiro);
+            updated = true;
+        }
+
+        if (updated) {
+            Designacao updatedDesignacao = designacaoRepository.save(existente);
+            return convertToDTO(updatedDesignacao);
+        } else {
+            throw new IllegalArgumentException("Nenhuma informação válida fornecida para atualização");
+        }
     }
 
     //Agendamento

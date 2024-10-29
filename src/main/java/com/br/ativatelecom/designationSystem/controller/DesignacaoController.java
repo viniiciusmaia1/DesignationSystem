@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/designacoes")
@@ -80,15 +79,16 @@ public class DesignacaoController {
         }
     }
 
-    @PutMapping("/{id}/cliente")
-    public ResponseEntity<DesignacaoDTO> atualizarCliente(@PathVariable Long id, @RequestBody Map<String, Long> payload) {
+    @PutMapping("/{id}/dados-cadastrais")
+    public ResponseEntity<DesignacaoDTO> atualizarInfoCadastral(@PathVariable Long id, @RequestBody DesignacaoDTO dto) {
         try {
-            Long clienteId = payload.get("clienteId");
-            DesignacaoDTO updatedDesignacao = designacaoService.updateCliente(id, clienteId);
+            DesignacaoDTO updatedDesignacao = designacaoService.updateCadastralInfo(id, dto);
             return ResponseEntity.ok(updatedDesignacao);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
+
 
 }
