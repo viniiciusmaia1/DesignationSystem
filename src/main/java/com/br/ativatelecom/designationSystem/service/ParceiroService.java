@@ -5,6 +5,7 @@ import com.br.ativatelecom.designationSystem.repository.ParceiroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -18,10 +19,14 @@ public class ParceiroService {
     }
 
     public Parceiro findOrCreateParceiro(String nomeParceiro) {
+
         return parceiroRepository.findByNomeIgnoreCase(nomeParceiro)
                 .orElseGet(() -> {
                     Parceiro novoParceiro = new Parceiro();
                     novoParceiro.setNome(nomeParceiro);
+                    novoParceiro.setDataCriacao(LocalDateTime.now());
+                    novoParceiro.setDataUltimaModificacao(LocalDateTime.now());
+
                     return parceiroRepository.save(novoParceiro);
                 });
     }

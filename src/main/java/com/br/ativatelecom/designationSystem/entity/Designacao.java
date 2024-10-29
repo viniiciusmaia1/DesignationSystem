@@ -62,7 +62,7 @@ public class Designacao {
     private LocalDateTime dataHomologacao;
     private LocalDateTime dataEntregaOi;
 
-    // Dados Financeiros
+
     public Designacao(String designacao, Cidade cidade, Parceiro parceiro, List<Observacao> observacoes) {
         this.designacao = designacao;
         this.cidade = cidade;

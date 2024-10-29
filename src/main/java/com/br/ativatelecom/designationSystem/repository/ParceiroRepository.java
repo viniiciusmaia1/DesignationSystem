@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ParceiroRepository extends JpaRepository<Parceiro, Long> {
     Optional<Parceiro> findByNomeIgnoreCase(String nome);
+    Optional<Parceiro> findByNome(String nome);
 }
 

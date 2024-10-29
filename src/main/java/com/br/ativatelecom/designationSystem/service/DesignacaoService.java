@@ -25,28 +25,28 @@ public class DesignacaoService {
 
     private final DesignacaoRepository designacaoRepository;
     private final CidadeService cidadeService;
-    private final ClienteRepository clienteRepository;
+    private final ClienteService clienteService;
     private final ParceiroService parceiroService;
 
     @Autowired
     public DesignacaoService(DesignacaoRepository designacaoRepository, CidadeService cidadeService,
-                             ClienteRepository clienteRepository, ParceiroService parceiroService) {
+                             ClienteService clienteService, ParceiroService parceiroService) {
         this.designacaoRepository = designacaoRepository;
         this.cidadeService = cidadeService;
-        this.clienteRepository = clienteRepository;
+        this.clienteService = clienteService;
         this.parceiroService = parceiroService;
     }
 
     //Designacao:
     public DesignacaoDTO createDesignation(DesignacaoDTO dto) {
+
         UniqueDesignationVerification(dto.getDesignacao());
 
-        Cliente cliente = findOrCreateCliente(dto.getClienteNome());
+        Cliente cliente = clienteService.findOrCreateCliente(dto.getClienteNome());
         Cidade cidade = cidadeService.findOrCreateCidade(dto.getNomeCidade());
         Parceiro parceiro = parceiroService.findOrCreateParceiro(dto.getParceiroNome());
 
-        Designacao designacao = new Designacao();
-        designacao.setDesignacao(dto.getDesignacao());
+        Designacao designacao = new Designacao(dto.getDesignacao());
         designacao.setCidade(cidade);
         designacao.setCliente(cliente);
         designacao.setParceiro(parceiro);
@@ -113,22 +113,12 @@ public class DesignacaoService {
             throw new IllegalArgumentException("ID do cliente não pode ser nulo");
         }
 
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        Cliente cliente = clienteService.findById(clienteId);
 
         existente.setCliente(cliente);
 
         Designacao updatedDesignacao = designacaoRepository.save(existente);
         return convertToDTO(updatedDesignacao);
-    }
-
-    private Cliente findOrCreateCliente(String nomeCliente) {
-        return clienteRepository.findByNomeIgnoreCase(nomeCliente)
-                .orElseGet(() -> {
-                    Cliente novoCliente = new Cliente();
-                    novoCliente.setNome(nomeCliente);
-                    return clienteRepository.save(novoCliente);
-                });
     }
 
 
