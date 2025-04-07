@@ -10,6 +10,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
+import com.br.ativatelecom.designationSystem.others.UpdateStatusRequest;
+import com.br.ativatelecom.designationSystem.service.DesignacaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Tag(name = "Designações", description = "Gerenciamento completo de designações")
 @RestController
 @RequestMapping("/api/designacoes")
 public class DesignacaoController {
@@ -21,6 +35,7 @@ public class DesignacaoController {
         this.designacaoService = designacaoService;
     }
 
+    @Operation(summary = "Criar uma nova designação")
     @PostMapping
     public ResponseEntity<DesignacaoDTO> criarDesignacao(@RequestBody DesignacaoDTO request) {
         try {
@@ -31,8 +46,10 @@ public class DesignacaoController {
         }
     }
 
+    @Operation(summary = "Buscar designação por ID")
     @GetMapping("/{id}")
-    public ResponseEntity<DesignacaoDTO> buscarDesignacao(@PathVariable Long id) {
+    public ResponseEntity<DesignacaoDTO> buscarDesignacao(
+            @Parameter(description = "ID da designação") @PathVariable Long id) {
         try {
             DesignacaoDTO designacao = designacaoService.findById(id);
             return ResponseEntity.ok(designacao);
@@ -41,8 +58,11 @@ public class DesignacaoController {
         }
     }
 
+    @Operation(summary = "Atualizar o status da designação")
     @PutMapping("/{id}/status")
-    public ResponseEntity<DesignacaoDTO> atualizarStatus(@PathVariable Long id, @RequestBody UpdateStatusRequest request) {
+    public ResponseEntity<DesignacaoDTO> atualizarStatus(
+            @Parameter(description = "ID da designação") @PathVariable Long id,
+            @RequestBody UpdateStatusRequest request) {
         try {
             DesignacaoDTO updatedDesignacao = designacaoService.updateStatus(id, request.getStatus());
             return ResponseEntity.ok(updatedDesignacao);
@@ -51,8 +71,10 @@ public class DesignacaoController {
         }
     }
 
+    @Operation(summary = "Deletar designação")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarDesignacao(@PathVariable Long id) {
+    public ResponseEntity<Void> deletarDesignacao(
+            @Parameter(description = "ID da designação") @PathVariable Long id) {
         try {
             designacaoService.deleteDesignation(id);
             return ResponseEntity.noContent().build();
@@ -61,16 +83,20 @@ public class DesignacaoController {
         }
     }
 
+    @Operation(summary = "Listar designações com paginação")
     @GetMapping
     public ResponseEntity<List<DesignacaoDTO>> listarDesignacoes(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size) {
+            @Parameter(description = "Página") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Tamanho da página") @RequestParam(defaultValue = "50") int size) {
         List<DesignacaoDTO> designacoes = designacaoService.listAllDesignations(page, size);
         return ResponseEntity.ok(designacoes);
     }
 
+    @Operation(summary = "Atualizar dados técnicos da designação")
     @PutMapping("/{id}/dados-tecnicos")
-    public ResponseEntity<DesignacaoDTO> atualizarDadosTecnicos(@PathVariable Long id, @RequestBody DesignacaoDTO dto) {
+    public ResponseEntity<DesignacaoDTO> atualizarDadosTecnicos(
+            @Parameter(description = "ID da designação") @PathVariable Long id,
+            @RequestBody DesignacaoDTO dto) {
         try {
             DesignacaoDTO updatedDesignacao = designacaoService.updateTechnicalsInfo(id, dto);
             return ResponseEntity.ok(updatedDesignacao);
@@ -79,8 +105,11 @@ public class DesignacaoController {
         }
     }
 
+    @Operation(summary = "Atualizar dados cadastrais da designação")
     @PutMapping("/{id}/dados-cadastrais")
-    public ResponseEntity<DesignacaoDTO> atualizarInfoCadastral(@PathVariable Long id, @RequestBody DesignacaoDTO dto) {
+    public ResponseEntity<DesignacaoDTO> atualizarInfoCadastral(
+            @Parameter(description = "ID da designação") @PathVariable Long id,
+            @RequestBody DesignacaoDTO dto) {
         try {
             DesignacaoDTO updatedDesignacao = designacaoService.updateCadastralInfo(id, dto);
             return ResponseEntity.ok(updatedDesignacao);
@@ -88,7 +117,4 @@ public class DesignacaoController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
-
 }

@@ -3,6 +3,9 @@ package com.br.ativatelecom.designationSystem.controller;
 import com.br.ativatelecom.designationSystem.dto.ObservacaoDTO;
 import com.br.ativatelecom.designationSystem.entity.Observacao;
 import com.br.ativatelecom.designationSystem.service.ObservacaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Observações", description = "Gerenciamento de observações das designações")
 @RestController
 @RequestMapping("/api/observacoes")
 public class ObservacaoController {
@@ -21,29 +25,36 @@ public class ObservacaoController {
         this.observacaoService = observacaoService;
     }
 
+    @Operation(summary = "Cria uma nova observação para uma designação")
     @PostMapping("/{designacaoId}")
-    public ResponseEntity<Observacao> criarObservacao(@PathVariable Long designacaoId,
-                                                      @RequestBody ObservacaoDTO dto) {
-        Observacao novaObservao = observacaoService.createObservation(designacaoId, dto.getTítulo(), dto.getTexto());
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaObservao);
+    public ResponseEntity<Observacao> criarObservacao(
+            @Parameter(description = "ID da designação") @PathVariable Long designacaoId,
+            @RequestBody ObservacaoDTO dto) {
+        Observacao nova = observacaoService.createObservation(designacaoId, dto.getTítulo(), dto.getTexto());
+        return ResponseEntity.status(HttpStatus.CREATED).body(nova);
     }
 
+    @Operation(summary = "Lista observações de uma designação")
     @GetMapping("/{designaoId}")
-    public ResponseEntity<List<Observacao>> listarObservaes(@PathVariable Long designaoId) {
-        List<Observacao> observaes = observacaoService.listAllObservationsForDesignations(designaoId);
-        return ResponseEntity.ok(observaes);
+    public ResponseEntity<List<Observacao>> listarObservaes(
+            @Parameter(description = "ID da designação") @PathVariable Long designaoId) {
+        List<Observacao> observacoes = observacaoService.listAllObservationsForDesignations(designaoId);
+        return ResponseEntity.ok(observacoes);
     }
 
+    @Operation(summary = "Remove uma observação")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removerObservao(@PathVariable Long id) {
+    public ResponseEntity<Void> removerObservao(@Parameter(description = "ID da observação") @PathVariable Long id) {
         observacaoService.deleteObservations(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Atualiza uma observação")
     @PutMapping("/{id}")
-    public ResponseEntity<Observacao> atualizarobservao(@PathVariable Long id,
-                                                      @RequestBody ObservacaoDTO dto) {
-        Observacao updatedobservao = observacaoService.updateDesignacao(id, dto.getTítulo(), dto.getTexto());
-        return ResponseEntity.ok(updatedobservao);
+    public ResponseEntity<Observacao> atualizarobservao(
+            @Parameter(description = "ID da observação") @PathVariable Long id,
+            @RequestBody ObservacaoDTO dto) {
+        Observacao atualizada = observacaoService.updateDesignacao(id, dto.getTítulo(), dto.getTexto());
+        return ResponseEntity.ok(atualizada);
     }
 }
