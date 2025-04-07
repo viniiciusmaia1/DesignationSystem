@@ -35,10 +35,10 @@ public class ObservacaoController {
     }
 
     @Operation(summary = "Lista observações de uma designação")
-    @GetMapping("/{designaoId}")
-    public ResponseEntity<List<Observacao>> listarObservaes(
-            @Parameter(description = "ID da designação") @PathVariable Long designaoId) {
-        List<Observacao> observacoes = observacaoService.listAllObservationsForDesignations(designaoId);
+    @GetMapping("/{designacaoId}")
+    public ResponseEntity<List<Observacao>> listarObservacoes(
+            @Parameter(description = "ID da designação") @PathVariable Long designacaoId) {
+        List<Observacao> observacoes = observacaoService.listAllObservationsForDesignations(designacaoId);
         return ResponseEntity.ok(observacoes);
     }
 
@@ -51,7 +51,7 @@ public class ObservacaoController {
 
     @Operation(summary = "Atualiza uma observação")
     @PutMapping("/{id}")
-    public ResponseEntity<Observacao> atualizarobservao(
+    public ResponseEntity<Observacao> atualizarObservacao(
             @Parameter(description = "ID da observação") @PathVariable Long id,
             @RequestBody ObservacaoDTO dto) {
         Observacao atualizada = observacaoService.updateDesignacao(id, dto.getTítulo(), dto.getTexto());
