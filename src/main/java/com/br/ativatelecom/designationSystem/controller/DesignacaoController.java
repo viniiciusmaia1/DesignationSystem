@@ -3,6 +3,7 @@ package com.br.ativatelecom.designationSystem.controller;
 import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
 import com.br.ativatelecom.designationSystem.others.UpdateStatusRequest;
 import com.br.ativatelecom.designationSystem.service.DesignacaoService;
+import com.br.ativatelecom.designationSystem.utils.LimitListValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,18 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import com.br.ativatelecom.designationSystem.dto.DesignacaoDTO;
-import com.br.ativatelecom.designationSystem.others.UpdateStatusRequest;
-import com.br.ativatelecom.designationSystem.service.DesignacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "Designações", description = "Gerenciamento completo de designações")
 @RestController
@@ -86,9 +78,13 @@ public class DesignacaoController {
     @Operation(summary = "Listar designações com paginação")
     @GetMapping
     public ResponseEntity<List<DesignacaoDTO>> listarDesignacoes(
-            @Parameter(description = "Página") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "Tamanho da página") @RequestParam(defaultValue = "50") int size) {
-        List<DesignacaoDTO> designacoes = designacaoService.listAllDesignations(page, size);
+            @RequestParam(defaultValue = "20") int limit) {
+
+        if (!LimitListValidator.isLimiteValido(limit)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<DesignacaoDTO> designacoes = designacaoService.listAllWithLimit(limit);
         return ResponseEntity.ok(designacoes);
     }
 

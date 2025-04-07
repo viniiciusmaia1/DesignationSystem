@@ -8,7 +8,6 @@ import com.br.ativatelecom.designationSystem.entity.Parceiro;
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
 import com.br.ativatelecom.designationSystem.repository.DesignacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -81,10 +80,10 @@ public class DesignacaoService {
         designacaoRepository.deleteById(id);
     }
 
-    public List<DesignacaoDTO> listAllDesignations(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Designacao> designacoesPage = designacaoRepository.findAll(pageable);
-        return designacoesPage.stream()
+    public List<DesignacaoDTO> listAllWithLimit(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return designacaoRepository.findAll(pageable)
+                .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
