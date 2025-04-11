@@ -2,6 +2,7 @@ package com.br.ativatelecom.designationSystem.dto;
 
 import com.br.ativatelecom.designationSystem.entity.Cliente;
 import com.br.ativatelecom.designationSystem.entity.Designacao;
+import com.br.ativatelecom.designationSystem.enuns.ProdutoEnum;
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class DesignacaoDTO {
     private StatusEnum status;
     private String parceiroNome;
     private String clienteNome;
+    private ProdutoEnum produtoEnum;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy - HH:mm:ss")
     private LocalDateTime dataCriacao;
@@ -56,6 +58,7 @@ public class DesignacaoDTO {
         dto.setDesignacao(designacao.getDesignacao());
         dto.setNomeCidade(designacao.getCidade() != null ? designacao.getCidade().getNome() : null);
         dto.setStatus(designacao.getStatus());
+        dto.setProdutoEnum(designacao.getProdutoEnum());
         dto.setDataCriacao(designacao.getDataCriacao());
         dto.setDataUltimaModificacao(designacao.getDataUltimaModificacao());
         dto.setDataEnvioRb(designacao.getDataEnvioRb());
@@ -78,12 +81,13 @@ public class DesignacaoDTO {
         return convertToDTO(designacao);
     }
 
-    public DesignacaoDTO(Long id, String designacao, String nomeCidade, StatusEnum status, Cliente cliente, String nomeParceiro) {
+    public DesignacaoDTO(Long id, String designacao, String nomeCidade, StatusEnum status,ProdutoEnum produtoEnum, Cliente cliente, String nomeParceiro) {
         this.id = id;
         this.designacao = designacao;
         this.nomeCidade = nomeCidade;
         this.clienteNome = cliente.getNome();
         this.status = status;
+        this.produtoEnum = produtoEnum;
         this.parceiroNome = nomeParceiro;
     }
 
@@ -91,6 +95,7 @@ public class DesignacaoDTO {
         Designacao designacao = new Designacao();
         designacao.setDesignacao(this.designacao);
         designacao.setStatus(this.status);
+        designacao.setProdutoEnum(this.produtoEnum);
         designacao.setCvlan(this.cvlan);
         designacao.setSvlan(this.svlan);
         designacao.setIpWan(this.ipWan);

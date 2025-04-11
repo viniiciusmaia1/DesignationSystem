@@ -1,5 +1,6 @@
 package com.br.ativatelecom.designationSystem.entity;
 
+import com.br.ativatelecom.designationSystem.enuns.ProdutoEnum;
 import com.br.ativatelecom.designationSystem.enuns.StatusEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -37,6 +38,10 @@ public class Designacao {
     @Column(name = "status", nullable = false)
     private StatusEnum status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "produto", nullable = false)
+    private ProdutoEnum produtoEnum;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cidade", referencedColumnName = "id", nullable = false)
     private Cidade cidade;
@@ -71,6 +76,7 @@ public class Designacao {
         this.status = StatusEnum.VIABILIDADE;
         this.parceiro = parceiro;
         this.observacoes = observacoes;
+        this.produtoEnum = ProdutoEnum.VPN_VIP;
 
         if (observacoes != null) {
             for (Observacao obs : observacoes) {
@@ -85,6 +91,7 @@ public class Designacao {
         this.dataUltimaModificacao = LocalDateTime.now();
         this.status = StatusEnum.VIABILIDADE;
         this.observacoes = null;
+        this.produtoEnum = ProdutoEnum.VPN_VIP;
     }
 
     @PreUpdate
